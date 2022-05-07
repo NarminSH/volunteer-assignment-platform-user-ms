@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -38,3 +39,7 @@ def read_volunteers(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
 def read_volunteer(user_id: int, db: Session = Depends(get_db)):
     user = get_user(db=db, user_id=user_id)
     return user    
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

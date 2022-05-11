@@ -13,6 +13,3 @@ session = SessionLocal()
 
 Base = declarative_base()
 
-
-## MAKE THIS IMPORTANT CHANGE TO USE AUTOCOMMIT TRANSACTIONS WITH BIT.IO
-## eng=create_engine('YOUR_POSTRES_CONNECT_STRING', isolation_level="AUTOCOMMIT")

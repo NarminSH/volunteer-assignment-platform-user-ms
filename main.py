@@ -1,4 +1,4 @@
-from typing import List
+from sqlalchemy import inspect
 import uvicorn
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from users import models
 from users.database import engine, SessionLocal
 from users.crud import get_user, filter_users, get_users
-from pydantic import BaseModel
+from users import schemas
 
 app = FastAPI()
 
@@ -43,25 +43,17 @@ def read_volunteer(user_id: int, db: Session = Depends(get_db)):
     return user    
 
 
-class User(BaseModel):
-    field: str
-    operator: str
-    value: str
 
-class UserList(BaseModel):
-    users: List[User]
 
-@app.post('/filter-volunteers/')
-def filter_volunteers(data: UserList, db: Session = Depends(get_db)):
+
+@app.post('/filter-volunteers')
+def filter_volunteers(data: schemas.UserList, db: Session = Depends(get_db)):
     matched_users = []
     print(data.users, 'query over here..........')
     for i in data.users: 
-        print(i, 'iiiii')
-        print(i.field)
         field = i.field
         operator = i.operator
         value = i.value
-        print(type(value), 'value type')
         print(field, 'field', operator, 'operator', value, 'value')
         user = filter_users(db, field=field, operator=operator, value=value)
         if user not in matched_users:
@@ -70,23 +62,10 @@ def filter_volunteers(data: UserList, db: Session = Depends(get_db)):
     return matched_users
 
 
-# [
-# {
-# field: "name",
-# operator: "=",
-# value: "Musa",
-# },
-# {
-# field: "age",
-# operator: ">",
-# value: "22",
-# },
-# {
-# field: "location",
-# operator: "contains",
-# value: "B",
-# }
-# ]
+@app.get('/volunteer-fields')
+def read_fields():
+    columns = [column.name for column in inspect(models.Volunteers).c]
+    return columns
 
 
 if __name__ == "__main__":

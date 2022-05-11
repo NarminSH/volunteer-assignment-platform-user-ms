@@ -1,7 +1,8 @@
+from typing import List
 from pydantic import BaseModel
 
 
-class User(BaseModel):
+class Volunteer(BaseModel):
     id: int
     first_name: str
     last_name: str
@@ -85,3 +86,13 @@ class User(BaseModel):
     candidate_under_18: str
     special_groups_international: str
     municipality_address: str
+
+
+class User(BaseModel):
+    field: str
+    operator: str
+    value: str
+
+
+class UserList(BaseModel):
+    users: List[User]

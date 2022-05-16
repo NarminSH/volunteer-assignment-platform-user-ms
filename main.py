@@ -1,7 +1,8 @@
-from sqlalchemy import inspect
+from operator import or_
+from sqlalchemy import inspect, or_
 import pandas as pd
 import uvicorn
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from users import models
@@ -69,37 +70,58 @@ def read_fields():
     return columns
 
 
+@app.get('/free-volunteers')
+def filter_free_users(db: Session = Depends(get_db)):
+    users = db.query(models.Volunteers).filter(models.Volunteers.status == "Free").all()
+    return users
+    
+
+
+@app.get('/occupied-volunteers')
+def filter_occupied_users(db: Session = Depends(get_db)):
+    users = db.query(models.Volunteers).filter(or_(models.Volunteers.status == "Assign", models.Volunteers.status == "Waitlist")).all()
+    return users
+
+
 
 @app.get('/import-users-data')
 def import_data(db: Session = Depends(get_db)):
     all_users_in_db = []
-    data = pd.read_excel('assignment-data.xlsx', index_col=None)
-    for name in data.iterrows():    
-        new_user_from_excel = name[1].to_dict()
-        excel_dob = new_user_from_excel['Candidate - Date of Birth']
-        print(excel_dob)
-        for key, value in new_user_from_excel.items():
-            if key == 'Candidate - ID':
-                user = get_user(db=db, user_id=value)
-                if user and user not in all_users_in_db:
-                    if user.dob == excel_dob:
-                        print('they are equal')
-                        all_users_in_db.append(user)
-                    else:
-                        print('not equal')
-                        return "dobs aren't matching"
-                else:
-                    created_user = models.Volunteers(key=key)
-                    db.add(created_user)
-                    db.commit()
-                    db.refresh(created_user)
-                    return created_user
-
-                print(key)
-                print(value)
-        print(all_users_in_db)                
-        print("................................")
-        print("................................")        
+    all_users_in_excel = []
+    users = get_users(db, skip=0, limit=100)
+    # result_dict = [u.__dict__ for u in users]
+    # print(result_dict)
+    # for user in users:
+    #     print(user._asdict())
+        # print(all_users_in_db)
+    # all_users_in_db.append(users)
+    # data = pd.read_excel('assignment-data.xlsx', index_col=None)
+    # for name in data.iterrows():  
+    #     new_user_from_excel = name[1].to_dict()
+    #     all_users_in_excel.append(new_user_from_excel)
+    #     excel_dob = new_user_from_excel['Candidate - Date of Birth']
+        # print(excel_dob)
+        # for key, value in new_user_from_excel.items():
+        #     if key == 'Candidate - ID':
+        #         user = get_user(db=db, user_id=value)
+        #         if user and user not in all_users_in_db:
+        #             if user.dob == excel_dob:
+        #                 # print('they are equal')
+        #                 all_users_in_db.append(user)
+        #             else:
+        #                 # print('not equal')
+        #                 return "dobs aren't matching"
+        #         else:
+        #             pass
+                    # created_user = models.Volunteers(key=key)
+                    # db.add(created_user)
+                    # db.commit()
+                    # db.refresh(created_user)
+                    # return created_user
+        # print(all_users_in_excel)      
+    # print(all_users_in_db)         
+    print("................................")
+    print("................................")        
     # volunteers_df = pd.DataFrame(data)
     # volunteers_df["Candidate - ID"]=volunteers_df["Candidate - ID"].astype(str)
     # for d in range(len(data)):

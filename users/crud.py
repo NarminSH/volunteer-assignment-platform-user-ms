@@ -190,3 +190,5 @@ def create_user(db: Session, user_id: str,   first_name : str,
     db.commit()
     db.refresh(new_user)
     return new_user
+
+

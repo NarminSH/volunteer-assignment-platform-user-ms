@@ -13,8 +13,7 @@ class Volunteers(Base):
     __tablename__ = "volunteers"
 
     id = Column('Candidate - ID', Integer, primary_key=True, index=True, nullable=False)
-    first_name = Column(String)
-    last_name = Column(String)
+    full_name = Column("Candidate - Full Name", String)
     picture = Column(String)
     email = Column(String)
     phone = Column(String)
@@ -101,5 +100,6 @@ class Volunteers(Base):
     is_deleted = Column(Boolean, default=False)
     deleted_at = Column(DateTime)
     updated_at = Column(DateTime)
+
 
 

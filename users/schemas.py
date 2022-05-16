@@ -88,11 +88,19 @@ class Volunteer(BaseModel):
     municipality_address: str
 
 
-class User(BaseModel):
+class FilterUser(BaseModel):
     field: str
     operator: str
     value: str
 
 
-class UserList(BaseModel):
-    users: List[User]
+class FilterList(BaseModel):
+    users: List[FilterUser]
+
+
+class UserCreate(BaseModel):
+    gender_for_accreditation: str
+    dob: str
+    current_occupation: str
+    country: str
+    

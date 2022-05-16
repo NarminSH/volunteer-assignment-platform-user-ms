@@ -1,12 +1,18 @@
-from sqlalchemy import Column, Integer, String, Boolean, Date, DateTime
-from users.database import Base, session
+import enum
+from sqlalchemy import Column, Integer, String, Boolean, Date, DateTime, Enum
+from users.database import Base
 
+
+class StatusEnum(enum.Enum):
+    Assign = "Assigned"
+    Waitlist = "Waitlisted"
+    Free = "Free"
 
 
 class Volunteers(Base):
     __tablename__ = "volunteers"
 
-    id = Column(Integer, primary_key=True, index=True, nullable=False)
+    id = Column('Candidate - ID', Integer, primary_key=True, index=True, nullable=False)
     first_name = Column(String)
     last_name = Column(String)
     picture = Column(String)
@@ -14,8 +20,8 @@ class Volunteers(Base):
     phone = Column(String)
     nationality = Column(String)
     _country_issued = Column(String)
-    gender_for_accreditation = Column(String)
-    dob = Column(Date)
+    gender_for_accreditation = Column('Candidate - Gender Qatar', String)
+    dob = Column('Candidate - Date of Birth', Date)
     current_occupation = Column(String)
     id_document_type = Column(String)
     qid_number = Column(String)
@@ -88,11 +94,12 @@ class Volunteers(Base):
     daily_availability_shift_overnight = Column(String)
     candidate_under_18 = Column(String)
     special_groups_international = Column(String)
-    municipality_address = Column(String)
+    municipality_address = Column(String) 
+    role_offer_id = Column(Integer)
+    status = Column(Enum(StatusEnum), default="Free")
     created_at = Column(DateTime)
     is_deleted = Column(Boolean, default=False)
     deleted_at = Column(DateTime)
     updated_at = Column(DateTime)
 
-# query = session.query(Volunteers)
 

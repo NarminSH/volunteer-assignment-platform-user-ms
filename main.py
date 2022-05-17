@@ -1,14 +1,18 @@
-from operator import or_
+
+from datetime import datetime
+import shutil
+import numpy as np
 from sqlalchemy import inspect, or_
 import pandas as pd
 import uvicorn
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from users import models
 from users.database import engine, SessionLocal
 from users.crud import get_user, filter_users, get_users
 from users import schemas
+from users import models
 
 app = FastAPI()
 
@@ -53,10 +57,10 @@ def filter_volunteers(data: schemas.FilterList, db: Session = Depends(get_db)):
     matched_users = []
     print(data.users, 'query over here..........')
     for i in data.users: 
-        field = i.field
+        requirement = i.requirement
         operator = i.operator
         value = i.value
-        user = filter_users(db, field=field, operator=operator, value=value)
+        user = filter_users(db, requirement=requirement, operator=operator, value=value)
         if user != [] and user is not None:
             if user not in matched_users:
                 matched_users.append(user)
@@ -84,163 +88,147 @@ def filter_occupied_users(db: Session = Depends(get_db)):
 
 
 
-@app.get('/import-users-data')
-def import_data(db: Session = Depends(get_db)):
-    all_users_in_db = []
+
+@app.post('/import-users-data')
+def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
     all_users_in_excel = []
-    users = get_users(db, skip=0, limit=100)
-    # result_dict = [u.__dict__ for u in users]
-    # print(result_dict)
-    # for user in users:
-    #     print(user._asdict())
-        # print(all_users_in_db)
-    # all_users_in_db.append(users)
-    # data = pd.read_excel('assignment-data.xlsx', index_col=None)
-    # for name in data.iterrows():  
-    #     new_user_from_excel = name[1].to_dict()
-    #     all_users_in_excel.append(new_user_from_excel)
-    #     excel_dob = new_user_from_excel['Candidate - Date of Birth']
-        # print(excel_dob)
-        # for key, value in new_user_from_excel.items():
-        #     if key == 'Candidate - ID':
-        #         user = get_user(db=db, user_id=value)
-        #         if user and user not in all_users_in_db:
-        #             if user.dob == excel_dob:
-        #                 # print('they are equal')
-        #                 all_users_in_db.append(user)
-        #             else:
-        #                 # print('not equal')
-        #                 return "dobs aren't matching"
-        #         else:
-        #             pass
-                    # created_user = models.Volunteers(key=key)
-                    # db.add(created_user)
-                    # db.commit()
-                    # db.refresh(created_user)
-                    # return created_user
-        # print(all_users_in_excel)      
-    # print(all_users_in_db)         
-    print("................................")
-    print("................................")        
-    # volunteers_df = pd.DataFrame(data)
-    # volunteers_df["Candidate - ID"]=volunteers_df["Candidate - ID"].astype(str)
-    # for d in range(len(data)):
-    #     user_id = volunteers_df['Candidate - ID'].values[d]
-    #     user = get_user(db=db, user_id=user_id)
-    #     dob = pd.DataFrame(data, columns= ['Candidate - Date of Birth']).values[d]
-    #     dobby = pd.DataFrame(data, columns= ['Candidate - Date of Birth'])
-    #     print(dob, 'numpy', type(dob))
-    #     print(dobby, 'string', type(dobby))
-    #     if not user:
-    #         created_user = models.Volunteers(id=user_id, gender_for_accreditation = pd.DataFrame(data, columns= ['Candidate - Gender Qatar']).values[d],
-    #     dob = pd.DataFrame(data, columns= ['Candidate - Date of Birth']).values[d],
-    #     current_occupation = pd.DataFrame(data, columns= ['Candidate - Current occupation']).values[d],
-    #     id_document_country_of_issue = pd.DataFrame(data, columns= ['Candidate - ID']).values[d],
-    #     driving_license_type = pd.DataFrame(data, columns= ["Candidate - Driver's Licence"]).values[d],
-    #     country = pd.DataFrame(data, columns= ['Candidate - Country of Residence']).values[d],
-    #     international_accommodation_preference = pd.DataFrame(data, columns= ['Candidate - FWC F&F Accommodation in Qatar']).values[d],
-    #     disability_yes_no = pd.DataFrame(data, columns= ['Candidate - Disability']).values[d],
-    #     disability_type = pd.DataFrame(data, columns= ['Candidate - Disability type']).values[d],
-    #     covid_19_vaccinated = pd.DataFrame(data, columns= ['Candidate - COVID-19 Vaccinated?']).values[d],
-    #     education_onechoice = pd.DataFrame(data, columns= ['Candidate - Education FWC']).values[d],
-    #     area_of_study = pd.DataFrame(data, columns= ['Candidate - Education speciality']).values[d],
-    #     english_fluency_level = pd.DataFrame(data, columns= ['Candidate - English Fluency Level']).values[d],
-    #     arabic_fluency_level = pd.DataFrame(data, columns= ['Candidate - Arabic Fluency Level']).values[d])
-    #         db.add(created_user)
-    #         db.commit()
-    #         db.refresh(created_user)
-    #         print(created_user.id)
-    #         print(created_user, '........')
-    #         all_users_in_db.append(created_user)
-    #         return all_users_in_db
-    # volunteers_df["Candidate - Gender Qatar"] = volunteers_df["Candidate - Gender Qatar"].astype(str)
-    # gender_for_accreditation = pd.DataFrame(data, columns= ['Candidate - Gender Qatar'])
-    # dob = pd.DataFrame(data, columns= ['Candidate - Date of Birth'])
-    # current_occupation = pd.DataFrame(data, columns= ['Candidate - Current occupation'])
-    # id_document_country_of_issue = pd.DataFrame(data, columns= ['Candidate - ID'])
-    # driving_license_type = pd.DataFrame(data, columns= ["Candidate - Driver's Licence"])
-    # country = pd.DataFrame(data, columns= ['Candidate - Country of Residence'])
-    # international_accommodation_preference = pd.DataFrame(data, columns= ['Candidate - FWC F&F Accommodation in Qatar'])
-    # disability_yes_no = pd.DataFrame(data, columns= ['Candidate - Disability'])
-    # disability_type = pd.DataFrame(data, columns= ['Candidate - Disability type'])
-    # covid_19_vaccinated = pd.DataFrame(data, columns= ['Candidate - COVID-19 Vaccinated?'])
-    # education_onechoice = pd.DataFrame(data, columns= ['Candidate - Education FWC'])
-    # area_of_study = pd.DataFrame(data, columns= ['Candidate - Education speciality'])
-    # english_fluency_level = pd.DataFrame(data, columns= ['Candidate - English Fluency Level'])
-    # arabic_fluency_level = pd.DataFrame(data, columns= ['Candidate - Arabic Fluency Level'])
-    # additional_language_1 = pd.DataFrame(data, columns= ['Candidate - Additional Language 1'])
-    # additional_language_1_fluency_level = pd.DataFrame(data, columns= ['Candidate - Additional Language 1 Fluency Level'])
-    # additional_language_2 = pd.DataFrame(data, columns= ['Candidate - Additional Language 2'])
-    # additional_language_2_fluency_level = pd.DataFrame(data, columns= ['Candidate - Additional Language 2 Fluency Level'])
-    # additional_language_3 = pd.DataFrame(data, columns= ['Candidate - Additional Language 3'])
-    # additional_language_3_fluency_level = pd.DataFrame(data, columns= ['Candidate - Additional Language 3 Fluency Level'])
-    # additional_language_4 = pd.DataFrame(data, columns= ['Candidate - Additional Language 4'])
-    # additional_language_4_fluency_level = pd.DataFrame(data, columns= ['Candidate - Additional Language 4 Fluency Level'])
-    # certified_translator_language = pd.DataFrame(data, columns= ['Candidate - Certified Translator Language'])
-    # describe_your_it_skills = pd.DataFrame(data, columns= ['Candidate - Describe your IT skills'])
-    # skill_1 = pd.DataFrame(data, columns= ['Candidate - Skill 1'])
-    # skill_2 = pd.DataFrame(data, columns= ['Candidate - Skill 2'])
-    # skill_3 = pd.DataFrame(data, columns= ['Candidate - Skill 3'])
-    # skill_4 = pd.DataFrame(data, columns= ['Candidate - Skill 4'])
-    # skill_5 = pd.DataFrame(data, columns= ['Candidate - Skill 5'])
-    # skill_6 = pd.DataFrame(data, columns= ['Candidate - Skill 6'])
-    # previous_volunteering_experience = pd.DataFrame(data, columns= ['Candidate - Which volunteer role(s) have you performed?'])
-    # volunteer_experience = pd.DataFrame(data, columns= ['Candidate - Do you have volunteering experience?'])
-    # fwc_are_you_interested_in_a_leadership_role = pd.DataFrame(data, columns= ['Candidate - FWC Are you interested in a leadership role? (The data you provide will be used as a reference; other roles may be assigned)'])
-    # fwc_leadership_experience = pd.DataFrame(data, columns= ['Candidate - FWC Leadership Experience'])
-    # ceremonies_yes_no = pd.DataFrame(data, columns= ['Candidate - Ceremonies yes no'])
-    # cast_yes_no = pd.DataFrame(data, columns= ['Candidate - Cast yes no'])
-    # cast_options = pd.DataFrame(data, columns= ['Candidate - Cast options'])
-    # motivation_to_volunteer_at_fwc = pd.DataFrame(data, columns= ['Candidate - Motivation Score'])
-    # availability_during_tournament = pd.DataFrame(data, columns= ['Candidate - Availability during tournament Alfa'])
-    # daily_availability_shift_morning = pd.DataFrame(data, columns= ['Candidate - Daily availability shift morning Alfa'])
-    # daily_availability_shift_afternoon = pd.DataFrame(data, columns= ['Candidate - Daily availability shift afternoon Alfa'])
-    # daily_availability_shift_night = pd.DataFrame(data, columns= ['Candidate - Daily availability shift evening Alfa'])
-    # daily_availability_shift_overnight = pd.DataFrame(data, columns= ['Candidate - Daily availability shift overnight Alfa'])
-    # municipality_address = pd.DataFrame(data, columns= ['Candidate - Municipality (Address)']) 
+    print(type(file))
+    print(file.filename)
+    with open(f'{file.filename}', "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
 
+    data = pd.read_excel("assignment-data.xlsx", index_col=None)
+    print(data)
+    volunteer_data = data.astype(object).replace(np.nan, None)
+
+    for name in volunteer_data.iterrows():  
+        new_user_from_excel = name[1].to_dict()
+        all_users_in_excel.append(new_user_from_excel)
     
 
-    # if not user:
-    #     created_user = create_user(db=db, user_id=user_id, gender_for_accreditation=pd.DataFrame(data, columns= ['Candidate - Gender Qatar']),
-    #     dob=pd.DataFrame(data, columns= ['Candidate - Date of Birth']),
-    #     current_occupation=pd.DataFrame(data, columns= ['Candidate - Current occupation']),
-    #     id_document_country_of_issue=pd.DataFrame(data, columns= ['Candidate - ID']),
-    #     driving_license_type=pd.DataFrame(data, columns= ["Candidate - Driver's Licence"]), country=country,international_accommodation_preference=international_accommodation_preference,
-    #     disability_yes_no=disability_yes_no,disability_type=disability_type, covid_19_vaccinated=covid_19_vaccinated,
-    #     education_onechoice=education_onechoice,area_of_study=area_of_study,
-    #     english_fluency_level=english_fluency_level, arabic_fluency_level=arabic_fluency_level,
-    #     additional_language_1=additional_language_1,additional_language_1_fluency_level=additional_language_1_fluency_level,
-    #     additional_language_2= additional_language_2,additional_language_2_fluency_level=additional_language_2_fluency_level,
-    #     additional_language_3=additional_language_3,additional_language_3_fluency_level=additional_language_3_fluency_level,
-    #     additional_language_4=additional_language_4,additional_language_4_fluency_level=additional_language_4_fluency_level,
-    #     certified_translator_language=certified_translator_language, describe_your_it_skills=describe_your_it_skills,
-    #     skill_1=skill_1,skill_2=skill_2,skill_3=skill_3,skill_4=skill_4,skill_5=skill_5,skill_6=skill_6,
-    #     previous_volunteering_experience=previous_volunteering_experience,volunteer_experience=volunteer_experience,
-    #     fwc_are_you_interested_in_a_leadership_role=fwc_are_you_interested_in_a_leadership_role,
-    #     fwc_leadership_experience=fwc_leadership_experience,
-    #     ceremonies_yes_no=ceremonies_yes_no,cast_yes_no=cast_yes_no,cast_options=cast_options,
-    #     motivation_to_volunteer_at_fwc=motivation_to_volunteer_at_fwc,availability_during_tournament=availability_during_tournament,
-    #     daily_availability_shift_morning=daily_availability_shift_morning, 
-    #     daily_availability_shift_afternoon=daily_availability_shift_afternoon,
-    #     daily_availability_shift_night=daily_availability_shift_night, municipality_address=municipality_address,
-    #     daily_availability_shift_overnight=daily_availability_shift_overnight)
-    #     return created_user
-    # else:
-    #     raise HTTPException(status_code=400, detail="User already exists")
-    
-    #     candidate_id = pd.DataFrame(data, columns= ['Candidate - ID'], index=[d]).values[0]
-    #     print(type(candidate_id), 'candidate id')
-    #     stringifi = candidate_id.tostring()
-        # print(stringifi)
-        # user_id = int(stringifi)
-        # print(type(user_id), 'user id type')
-        
+    for key in all_users_in_excel:
+        full_name = key["Candidate - Full Name"]
+        user = db.query(models.Volunteers).filter(models.Volunteers.full_name == full_name).first()
 
-    # user = get_user(db=db, user_id=user_id )
-    
+        if not user:
+            new_user = models.Volunteers(candidate_id=key["Candidate - ID"], full_name=key["Candidate - Full Name"], 
+            checkpoint=key["Candidate - Checkpoint"], additional_language_1=key["Candidate - Additional Language 1"],
+            additional_language_1_fluency_level=key["Candidate - Additional Language 2"], 
+            additional_language_2=key["Candidate - Additional Language 2"],
+            additional_language_2_fluency_level=key["Candidate - Additional Language 2 Fluency Level"], 
+            additional_language_3=key["Candidate - Additional Language 3"],
+            additional_language_3_fluency_level=key["Candidate - Additional Language 3 Fluency Level"],
+            additional_language_4=key["Candidate - Additional Language 4"],
+            additional_language_4_fluency_level=key["Candidate - Additional Language 4 Fluency Level"],
+            gender_for_accreditation = key["Candidate - Gender Qatar"],
+            dob = key["Candidate - Date of Birth"],
+            delivery_score = key["Candidate - Delivering Amazing Score"],
+            current_occupation = key["Candidate - Current occupation"],
+            it_skills = key["Candidate - Describe your IT skills"],
+            driving_license = key["Candidate - Driver's Licence"],
+            residence_country = key["Candidate - Country of Residence"],
+            accommodation_in_qatar = key["Candidate - FWC F&F Accommodation in Qatar"],
+            disability_yes_no = key["Candidate - Disability"],
+            disability_type = key["Candidate - Disability type"],
+            covid_19_vaccinated = key["Candidate - COVID-19 Vaccinated?"],
+            education_fwc = key["Candidate - Education FWC"],
+            education_speciality = key["Candidate - Education speciality"],
+            area_of_study = key["Candidate - Area of Study"],
+            english_fluency_level = key["Candidate - English Fluency Level"],
+            arabic_fluency_level = key["Candidate - Arabic Fluency Level"],
+            describe_your_it_skills = key["Candidate - Describe your IT skills"],
+            skill_1 = key["Candidate - Skill 1"],
+            skill_2 = key["Candidate - skill 2"],
+            skill_3 = key["Candidate - Skill 3"],
+            skill_4 = key["Candidate - Skill 4"],
+            skill_5 = key["Candidate - Skill 5"],
+            skill_6 = key["Candidate - Skill 6"],
+            volunteer_experience = key["Candidate - Do you have volunteering experience?"],
+            preferred_volunteer_role = key["Candidate - Do you have a preferred volunteer role?"],
+            have_wheelchair = key["Candidate - Do you use a wheelchair?"],
+            fwc_are_you_interested_in_a_leadership_role = key["Candidate - FWC Are you interested in a leadership role? (The data you provide will be used as a reference; other roles may be assigned)"],
+            fwc_leadership_experience = key["Candidate - FWC Leadership Experience"],
+            ceremonies_yes_no = key["Candidate - Ceremonies yes no"],
+            cast_yes_no = key["Candidate - Cast yes no"],
+            certified_translator = key["Candidate - Certified translator"],
+            certified_translator_language = key["Candidate - Certified Translator Language"],
+            collaboration_score = key["Candidate - Collaboration Score"],
+            cast_options = key["Candidate - Cast options"],
+            motivation_score = key["Candidate - Motivation Score"],
+            pioneer = key["Candidate - Pioneer"],
+            international_volunteer = key["Candidate - International Volunteer Yes/No"],
+            fwc_what_is_availability = key["Candidate - FWC What is your availability?"],
+            availability_during_tournament = key["Candidate - Availability  during tournament Alfa"],
+            daily_availability_shift_morning = key["Candidate - Daily availability shift morning Alfa"],
+            daily_availability_shift_afternoon = key["Candidate - Daily availability shift afternoon Alfa"],
+            daily_availability_shift_night = key["Candidate - Daily availability shift evening Alfa"],
+            daily_availability_shift_overnight = key["Candidate - Daily availability shift overnight Alfa"],
+            group_interview = key["Candidate - Group Interview Comment"],
+            municipality_address = key["Candidate - Municipality (Address)"], created_at=datetime.now())
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+        else:
+            user.full_name = key["Candidate - Full Name"]
+            user.candidate_id = key["Candidate - ID"]
+            user.checkpoint=key["Candidate - Checkpoint"]
+            user.additional_language_1 = key["Candidate - Additional Language 1"]
+            user.additional_language_1_fluency_level=key["Candidate - Additional Language 2"]
+            user.additional_language_2=key["Candidate - Additional Language 2"]
+            user.additional_language_2_fluency_level=key["Candidate - Additional Language 2 Fluency Level"]
+            user.additional_language_3=key["Candidate - Additional Language 3"]
+            user.additional_language_3_fluency_level=key["Candidate - Additional Language 3 Fluency Level"]
+            user.additional_language_4=key["Candidate - Additional Language 4"]
+            user.additional_language_4_fluency_level=key["Candidate - Additional Language 4 Fluency Level"]
+            user.gender_for_accreditation = key["Candidate - Gender Qatar"]
+            user.dob = key["Candidate - Date of Birth"]
+            user.delivery_score = key["Candidate - Delivering Amazing Score"]
+            user.current_occupation = key["Candidate - Current occupation"]
+            user.it_skills = key["Candidate - Describe your IT skills"]
+            user.driving_license = key["Candidate - Driver's Licence"]
+            user.residence_country = key["Candidate - Country of Residence"]
+            user.accommodation_in_qatar = key["Candidate - FWC F&F Accommodation in Qatar"]
+            user.disability_yes_no = key["Candidate - Disability"]
+            user.disability_type = key["Candidate - Disability type"]
+            user.covid_19_vaccinated = key["Candidate - COVID-19 Vaccinated?"]
+            user.education_fwc = key["Candidate - Education FWC"]
+            user.education_speciality = key["Candidate - Education speciality"]
+            user.area_of_study = key["Candidate - Area of Study"]
+            user.english_fluency_level = key["Candidate - English Fluency Level"]
+            user.arabic_fluency_level = key["Candidate - Arabic Fluency Level"]
+            user.describe_your_it_skills = key["Candidate - Describe your IT skills"]
+            user.skill_1 = key["Candidate - Skill 1"]
+            user.skill_2 = key["Candidate - skill 2"]
+            user.skill_3 = key["Candidate - Skill 3"]
+            user.skill_4 = key["Candidate - Skill 4"]
+            user.skill_5 = key["Candidate - Skill 5"]
+            user.skill_6 = key["Candidate - Skill 6"]
+            user.volunteer_experience = key["Candidate - Do you have volunteering experience?"]
+            user.preferred_volunteer_role = key["Candidate - Do you have a preferred volunteer role?"]
+            user.have_wheelchair = key["Candidate - Do you use a wheelchair?"]
+            user.fwc_are_you_interested_in_a_leadership_role = key["Candidate - FWC Are you interested in a leadership role? (The data you provide will be used as a reference; other roles may be assigned)"]
+            user.fwc_leadership_experience = key["Candidate - FWC Leadership Experience"]
+            user.ceremonies_yes_no = key["Candidate - Ceremonies yes no"]
+            user.cast_yes_no = key["Candidate - Cast yes no"]
+            user.certified_translator = key["Candidate - Certified translator"]
+            user.certified_translator_language = key["Candidate - Certified Translator Language"]
+            user.collaboration_score = key["Candidate - Collaboration Score"]
+            user.cast_options = key["Candidate - Cast options"]
+            user.motivation_score = key["Candidate - Motivation Score"]
+            user.pioneer = key["Candidate - Pioneer"]
+            user.international_volunteer = key["Candidate - International Volunteer Yes/No"]
+            user.fwc_what_is_availability = key["Candidate - FWC What is your availability?"]
+            user.availability_during_tournament = key["Candidate - Availability during tournament Alfa"]
+            user.daily_availability_shift_morning = key["Candidate - Daily availability shift morning Alfa"]
+            user.daily_availability_shift_afternoon = key["Candidate - Daily availability shift afternoon Alfa"]
+            user.daily_availability_shift_night = key["Candidate - Daily availability shift evening Alfa"]
+            user.daily_availability_shift_overnight = key["Candidate - Daily availability shift overnight Alfa"]
+            user.group_interview = key["Candidate - Group Interview Comment"]
+            user.municipality_address = key["Candidate - Municipality (Address)"]
+            user.updated_at = datetime.now()
+            db.commit()
 
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="172.18.3.131", port=8001)

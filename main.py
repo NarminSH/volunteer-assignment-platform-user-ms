@@ -55,17 +55,64 @@ def read_volunteer(user_id: int, db: Session = Depends(get_db)):
 @app.post('/filter-volunteers')
 def filter_volunteers(data: schemas.FilterList, db: Session = Depends(get_db)):
     matched_users = []
+    send_users = []
     print(data.users, 'query over here..........')
     for i in data.users: 
         requirement = i.requirement
         operator = i.operator
-        value = i.value
-        user = filter_users(db, requirement=requirement, operator=operator, value=value)
-        if user != [] and user is not None:
-            if user not in matched_users:
-                matched_users.append(user)
-                print(matched_users, "...all matching users")
-    return matched_users
+        value = i.value 
+        if requirement == '' or operator=='' or value=='':
+            return {"status": status.HTTP_400_BAD_REQUEST, "result": "Empty requirement"}
+
+        if requirement=='language' and operator == '=':
+            users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1 == value, 
+            models.Volunteers.additional_language_2 == value, models.Volunteers.additional_language_3 == value,
+            models.Volunteers.additional_language_4 == value)).all()
+            matched_users.append(users)
+
+        elif requirement=='language' and operator == 'contains':
+            users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1.contains(value), 
+            models.Volunteers.additional_language_2.contains(value), models.Volunteers.additional_language_3.contains(value),
+            models.Volunteers.additional_language_4.contains(value))).all()
+            matched_users.append(users)
+        
+        if requirement=='language_fluency_level' and operator=='=':
+            users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1_fluency_level == value, 
+            models.Volunteers.additional_language_2_fluency_level == value, models.Volunteers.additional_language_3_fluency_level == value,
+            models.Volunteers.additional_language_4_fluency_level == value)).all()
+            matched_users.append(users)
+
+        elif requirement=='language_fluency_level' and operator=='contains':
+            users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1_fluency_level.contains(value), 
+            models.Volunteers.additional_language_2_fluency_level.contains(value), models.Volunteers.additional_language_3_fluency_level.contains(value),
+            models.Volunteers.additional_language_4_fluency_level.contains(value))).all()
+            matched_users.append(users)
+
+        if requirement=='skill' and operator=='=':
+            users = db.query(models.Volunteers).filter(or_(models.Volunteers.skill_1 == value, 
+            models.Volunteers.skill_2 == value, models.Volunteers.skill_3 == value,
+            models.Volunteers.skill_4 == value, models.Volunteers.skill_5 == value,
+            models.Volunteers.skill_6 == value)).all()
+            matched_users.append(users)
+        
+        elif requirement=='skill' and operator=='contains':
+            users = db.query(models.Volunteers).filter(or_(models.Volunteers.skill_1.contains(value), 
+            models.Volunteers.skill_2.contains(value), models.Volunteers.skill_3.contains(value),
+            models.Volunteers.skill_4.contains(value), models.Volunteers.skill_5.contains(value),
+            models.Volunteers.skill_6.contains(value))).all()
+            matched_users.append(users)
+
+        if requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level':
+            user = filter_users(db, requirement=requirement, operator=operator, value=value)
+            if user != [] and user is not None:
+                if user not in matched_users:
+                    matched_users.append(user)
+                    print(matched_users, "...all matching users")
+                    
+    for users in matched_users:
+        for one_user in users:
+            send_users.append(one_user)
+    return send_users
 
 
 @app.get('/volunteer-fields')
@@ -85,7 +132,6 @@ def filter_free_users(db: Session = Depends(get_db)):
 def filter_occupied_users(db: Session = Depends(get_db)):
     users = db.query(models.Volunteers).filter(or_(models.Volunteers.status == "Assign", models.Volunteers.status == "Waitlist")).all()
     return users
-
 
 
 
@@ -252,6 +298,7 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
             db.commit()
     else:
         return { "status": status.HTTP_400_BAD_REQUEST, "result": "Duplicate ID", "message": duplicate_ids_excel}
+
 
 
 

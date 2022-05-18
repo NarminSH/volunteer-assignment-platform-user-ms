@@ -111,133 +111,149 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
         else:
             if id_value not in duplicate_ids_excel:
                 duplicate_ids_excel.append(id_value)
-            
 
+    users = db.query(models.Volunteers).all()
+    all_candidate_ids_in_db = []
+    for user in users:
+        all_candidate_ids_in_db.append(user.candidate_id)
+
+    saved_users = []
+    updated_users = []    
     if duplicate_ids_excel == []: 
         for key in all_users_in_excel:
             candidate_id = key["Candidate - ID"]
-            user = db.query(models.Volunteers).filter(models.Volunteers.candidate_id == candidate_id).first()
-            if not user:
-                new_user = models.Volunteers(candidate_id=key["Candidate - ID"], full_name=key["Candidate - Full Name"], 
-                checkpoint=key["Candidate - Checkpoint"], additional_language_1=key["Candidate - Additional Language 1"],
-                additional_language_1_fluency_level=key["Candidate - Additional Language 2"], 
-                additional_language_2=key["Candidate - Additional Language 2"],
-                additional_language_2_fluency_level=key["Candidate - Additional Language 2 Fluency Level"], 
-                additional_language_3=key["Candidate - Additional Language 3"],
-                additional_language_3_fluency_level=key["Candidate - Additional Language 3 Fluency Level"],
-                additional_language_4=key["Candidate - Additional Language 4"],
-                additional_language_4_fluency_level=key["Candidate - Additional Language 4 Fluency Level"],
-                gender_for_accreditation = key["Candidate - Gender Qatar"],
-                dob = key["Candidate - Date of Birth"],
-                delivery_score = key["Candidate - Delivering Amazing Score"],
-                current_occupation = key["Candidate - Current occupation"],
-                it_skills = key["Candidate - Describe your IT skills"],
-                driving_license = key["Candidate - Driver's Licence"],
-                residence_country = key["Candidate - Country of Residence"],
-                accommodation_in_qatar = key["Candidate - FWC F&F Accommodation in Qatar"],
-                disability_yes_no = key["Candidate - Disability"],
-                disability_type = key["Candidate - Disability type"],
-                covid_19_vaccinated = key["Candidate - COVID-19 Vaccinated?"],
-                education_fwc = key["Candidate - Education FWC"],
-                education_speciality = key["Candidate - Education speciality"],
-                area_of_study = key["Candidate - Area of Study"],
-                english_fluency_level = key["Candidate - English Fluency Level"],
-                arabic_fluency_level = key["Candidate - Arabic Fluency Level"],
-                describe_your_it_skills = key["Candidate - Describe your IT skills"],
-                skill_1 = key["Candidate - Skill 1"],
-                skill_2 = key["Candidate - skill 2"],
-                skill_3 = key["Candidate - Skill 3"],
-                skill_4 = key["Candidate - Skill 4"],
-                skill_5 = key["Candidate - Skill 5"],
-                skill_6 = key["Candidate - Skill 6"],
-                volunteer_experience = key["Candidate - Do you have volunteering experience?"],
-                preferred_volunteer_role = key["Candidate - Do you have a preferred volunteer role?"],
-                have_wheelchair = key["Candidate - Do you use a wheelchair?"],
-                fwc_are_you_interested_in_a_leadership_role = key["Candidate - FWC Are you interested in a leadership role? (The data you provide will be used as a reference; other roles may be assigned)"],
-                fwc_leadership_experience = key["Candidate - FWC Leadership Experience"],
-                ceremonies_yes_no = key["Candidate - Ceremonies yes no"],
-                cast_yes_no = key["Candidate - Cast yes no"],
-                certified_translator = key["Candidate - Certified translator"],
-                certified_translator_language = key["Candidate - Certified Translator Language"],
-                collaboration_score = key["Candidate - Collaboration Score"],
-                cast_options = key["Candidate - Cast options"],
-                motivation_score = key["Candidate - Motivation Score"],
-                pioneer = key["Candidate - Pioneer"],
-                international_volunteer = key["Candidate - International Volunteer Yes/No"],
-                fwc_what_is_availability = key["Candidate - FWC What is your availability?"],
-                availability_during_tournament = key["Candidate - Availability  during tournament Alfa"],
-                daily_availability_shift_morning = key["Candidate - Daily availability shift morning Alfa"],
-                daily_availability_shift_afternoon = key["Candidate - Daily availability shift afternoon Alfa"],
-                daily_availability_shift_night = key["Candidate - Daily availability shift evening Alfa"],
-                daily_availability_shift_overnight = key["Candidate - Daily availability shift overnight Alfa"],
-                group_interview = key["Candidate - Group Interview Comment"],
-                municipality_address = key["Candidate - Municipality (Address)"], created_at=datetime.now())
-                db.add(new_user)
-                db.commit()
-                db.refresh(new_user)
+            if candidate_id not in all_candidate_ids_in_db:
+                new_user = {
+                "candidate_id": key["Candidate - ID"],
+                "full_name": key["Candidate - Full Name"],
+                "checkpoint": key["Candidate - Checkpoint"],
+                "additional_language_1": key["Candidate - Additional Language 1"],
+                "additional_language_2": key["Candidate - Additional Language 2"],
+                "additional_language_2_fluency_level": key["Candidate - Additional Language 2 Fluency Level"], 
+                "additional_language_3": key["Candidate - Additional Language 3"],
+                "additional_language_3_fluency_level": key["Candidate - Additional Language 3 Fluency Level"],
+                "additional_language_4": key["Candidate - Additional Language 4"],
+                "additional_language_4_fluency_level": key["Candidate - Additional Language 4 Fluency Level"],
+                "gender_for_accreditation": key["Candidate - Gender Qatar"],
+                "dob": key["Candidate - Date of Birth"],
+                "delivery_score": key["Candidate - Delivering Amazing Score"],
+                "current_occupation": key["Candidate - Current occupation"],
+                "it_skills": key["Candidate - Describe your IT skills"],
+                "driving_license": key["Candidate - Driver's Licence"],
+                "residence_country": key["Candidate - Country of Residence"],
+                "accommodation_in_qatar":  key["Candidate - FWC F&F Accommodation in Qatar"],
+                "disability_yes_no": key["Candidate - Disability"],
+                "disability_type": key["Candidate - Disability type"],
+                "covid_19_vaccinated": key["Candidate - COVID-19 Vaccinated?"],
+                "education_fwc": key["Candidate - Education FWC"],
+                "education_speciality": key["Candidate - Education speciality"],
+                "area_of_study": key["Candidate - Area of Study"],
+                "english_fluency_level": key["Candidate - English Fluency Level"],
+                "arabic_fluency_level": key["Candidate - Arabic Fluency Level"],
+                "describe_your_it_skills": key["Candidate - Describe your IT skills"],
+                "skill_1": key["Candidate - Skill 1"],
+                "skill_2": key["Candidate - skill 2"],
+                "skill_3": key["Candidate - Skill 3"],
+                "skill_4": key["Candidate - Skill 4"],
+                "skill_5" : key["Candidate - Skill 5"],
+                "skill_6" : key["Candidate - Skill 6"],
+                "volunteer_experience" :  key["Candidate - Do you have volunteering experience?"],
+                "preferred_volunteer_role" : key["Candidate - Do you have a preferred volunteer role?"],
+                "have_wheelchair" : key["Candidate - Do you use a wheelchair?"],
+                "fwc_are_you_interested_in_a_leadership_role" : key["Candidate - FWC Are you interested in a leadership role? (The data you provide will be used as a reference; other roles may be assigned)"],
+                "fwc_leadership_experience":  key["Candidate - FWC Leadership Experience"],
+                "ceremonies_yes_no" : key["Candidate - Ceremonies yes no"],
+                "cast_yes_no" : key["Candidate - Cast yes no"],
+                "certified_translator" : key["Candidate - Certified translator"],
+                "certified_translator_language" : key["Candidate - Certified Translator Language"],
+                "collaboration_score" : key["Candidate - Collaboration Score"],
+                "cast_options" : key["Candidate - Cast options"],
+                "motivation_score" : key["Candidate - Motivation Score"],
+                "pioneer" : key["Candidate - Pioneer"],
+                "international_volunteer" : key["Candidate - International Volunteer Yes/No"],
+                "fwc_what_is_availability" : key["Candidate - FWC What is your availability?"],
+                "availability_during_tournament" : key["Candidate - Availability  during tournament Alfa"],
+                "daily_availability_shift_morning" : key["Candidate - Daily availability shift morning Alfa"],
+                "daily_availability_shift_afternoon" : key["Candidate - Daily availability shift afternoon Alfa"],
+                "daily_availability_shift_night" : key["Candidate - Daily availability shift evening Alfa"],
+                "daily_availability_shift_overnight" : key["Candidate - Daily availability shift overnight Alfa"],
+                "group_interview" :  key["Candidate - Group Interview Comment"],
+                "municipality_address" : key["Candidate - Municipality (Address)"], 
+                "created_at": datetime.now()
+                }
+                saved_users.append(new_user)
             else:
-                user.full_name = key["Candidate - Full Name"]
-                user.candidate_id = key["Candidate - ID"]
-                user.checkpoint=key["Candidate - Checkpoint"]
-                user.additional_language_1 = key["Candidate - Additional Language 1"]
-                user.additional_language_1_fluency_level=key["Candidate - Additional Language 2"]
-                user.additional_language_2=key["Candidate - Additional Language 2"]
-                user.additional_language_2_fluency_level=key["Candidate - Additional Language 2 Fluency Level"]
-                user.additional_language_3=key["Candidate - Additional Language 3"]
-                user.additional_language_3_fluency_level=key["Candidate - Additional Language 3 Fluency Level"]
-                user.additional_language_4=key["Candidate - Additional Language 4"]
-                user.additional_language_4_fluency_level=key["Candidate - Additional Language 4 Fluency Level"]
-                user.gender_for_accreditation = key["Candidate - Gender Qatar"]
-                user.dob = key["Candidate - Date of Birth"]
-                user.delivery_score = key["Candidate - Delivering Amazing Score"]
-                user.current_occupation = key["Candidate - Current occupation"]
-                user.it_skills = key["Candidate - Describe your IT skills"]
-                user.driving_license = key["Candidate - Driver's Licence"]
-                user.residence_country = key["Candidate - Country of Residence"]
-                user.accommodation_in_qatar = key["Candidate - FWC F&F Accommodation in Qatar"]
-                user.disability_yes_no = key["Candidate - Disability"]
-                user.disability_type = key["Candidate - Disability type"]
-                user.covid_19_vaccinated = key["Candidate - COVID-19 Vaccinated?"]
-                user.education_fwc = key["Candidate - Education FWC"]
-                user.education_speciality = key["Candidate - Education speciality"]
-                user.area_of_study = key["Candidate - Area of Study"]
-                user.english_fluency_level = key["Candidate - English Fluency Level"]
-                user.arabic_fluency_level = key["Candidate - Arabic Fluency Level"]
-                user.describe_your_it_skills = key["Candidate - Describe your IT skills"]
-                user.skill_1 = key["Candidate - Skill 1"]
-                user.skill_2 = key["Candidate - skill 2"]
-                user.skill_3 = key["Candidate - Skill 3"]
-                user.skill_4 = key["Candidate - Skill 4"]
-                user.skill_5 = key["Candidate - Skill 5"]
-                user.skill_6 = key["Candidate - Skill 6"]
-                user.volunteer_experience = key["Candidate - Do you have volunteering experience?"]
-                user.preferred_volunteer_role = key["Candidate - Do you have a preferred volunteer role?"]
-                user.have_wheelchair = key["Candidate - Do you use a wheelchair?"]
-                user.fwc_are_you_interested_in_a_leadership_role = key["Candidate - FWC Are you interested in a leadership role? (The data you provide will be used as a reference; other roles may be assigned)"]
-                user.fwc_leadership_experience = key["Candidate - FWC Leadership Experience"]
-                user.ceremonies_yes_no = key["Candidate - Ceremonies yes no"]
-                user.cast_yes_no = key["Candidate - Cast yes no"]
-                user.certified_translator = key["Candidate - Certified translator"]
-                user.certified_translator_language = key["Candidate - Certified Translator Language"]
-                user.collaboration_score = key["Candidate - Collaboration Score"]
-                user.cast_options = key["Candidate - Cast options"]
-                user.motivation_score = key["Candidate - Motivation Score"]
-                user.pioneer = key["Candidate - Pioneer"]
-                user.international_volunteer = key["Candidate - International Volunteer Yes/No"]
-                user.fwc_what_is_availability = key["Candidate - FWC What is your availability?"]
-                user.availability_during_tournament = key["Candidate - Availability  during tournament Alfa"]
-                user.daily_availability_shift_morning = key["Candidate - Daily availability shift morning Alfa"]
-                user.daily_availability_shift_afternoon = key["Candidate - Daily availability shift afternoon Alfa"]
-                user.daily_availability_shift_night = key["Candidate - Daily availability shift evening Alfa"]
-                user.daily_availability_shift_overnight = key["Candidate - Daily availability shift overnight Alfa"]
-                user.group_interview = key["Candidate - Group Interview Comment"]
-                user.municipality_address = key["Candidate - Municipality (Address)"]
-                user.updated_at = datetime.now()
-                db.commit()
+                user = db.query(models.Volunteers).filter(models.Volunteers.candidate_id == candidate_id).first()
+                update_user = {
+                "id": user.id,
+                "candidate_id": key["Candidate - ID"],
+                "full_name": key["Candidate - Full Name"],
+                "checkpoint": key["Candidate - Checkpoint"],
+                "additional_language_1": key["Candidate - Additional Language 1"],
+                "additional_language_2": key["Candidate - Additional Language 2"],
+                "additional_language_2_fluency_level": key["Candidate - Additional Language 2 Fluency Level"], 
+                "additional_language_3": key["Candidate - Additional Language 3"],
+                "additional_language_3_fluency_level": key["Candidate - Additional Language 3 Fluency Level"],
+                "additional_language_4": key["Candidate - Additional Language 4"],
+                "additional_language_4_fluency_level": key["Candidate - Additional Language 4 Fluency Level"],
+                "gender_for_accreditation": key["Candidate - Gender Qatar"],
+                "dob": key["Candidate - Date of Birth"],
+                "delivery_score": key["Candidate - Delivering Amazing Score"],
+                "current_occupation": key["Candidate - Current occupation"],
+                "it_skills": key["Candidate - Describe your IT skills"],
+                "driving_license": key["Candidate - Driver's Licence"],
+                "residence_country": key["Candidate - Country of Residence"],
+                "accommodation_in_qatar":  key["Candidate - FWC F&F Accommodation in Qatar"],
+                "disability_yes_no": key["Candidate - Disability"],
+                "disability_type": key["Candidate - Disability type"],
+                "covid_19_vaccinated": key["Candidate - COVID-19 Vaccinated?"],
+                "education_fwc": key["Candidate - Education FWC"],
+                "education_speciality": key["Candidate - Education speciality"],
+                "area_of_study": key["Candidate - Area of Study"],
+                "english_fluency_level": key["Candidate - English Fluency Level"],
+                "arabic_fluency_level": key["Candidate - Arabic Fluency Level"],
+                "describe_your_it_skills": key["Candidate - Describe your IT skills"],
+                "skill_1": key["Candidate - Skill 1"],
+                "skill_2": key["Candidate - skill 2"],
+                "skill_3": key["Candidate - Skill 3"],
+                "skill_4": key["Candidate - Skill 4"],
+                "skill_5" : key["Candidate - Skill 5"],
+                "skill_6" : key["Candidate - Skill 6"],
+                "volunteer_experience" :  key["Candidate - Do you have volunteering experience?"],
+                "preferred_volunteer_role" : key["Candidate - Do you have a preferred volunteer role?"],
+                "have_wheelchair" : key["Candidate - Do you use a wheelchair?"],
+                "fwc_are_you_interested_in_a_leadership_role" : key["Candidate - FWC Are you interested in a leadership role? (The data you provide will be used as a reference; other roles may be assigned)"],
+                "fwc_leadership_experience":  key["Candidate - FWC Leadership Experience"],
+                "ceremonies_yes_no" : key["Candidate - Ceremonies yes no"],
+                "cast_yes_no" : key["Candidate - Cast yes no"],
+                "certified_translator" : key["Candidate - Certified translator"],
+                "certified_translator_language" : key["Candidate - Certified Translator Language"],
+                "collaboration_score" : key["Candidate - Collaboration Score"],
+                "cast_options" : key["Candidate - Cast options"],
+                "motivation_score" : key["Candidate - Motivation Score"],
+                "pioneer" : key["Candidate - Pioneer"],
+                "international_volunteer" : key["Candidate - International Volunteer Yes/No"],
+                "fwc_what_is_availability" : key["Candidate - FWC What is your availability?"],
+                "availability_during_tournament" : key["Candidate - Availability  during tournament Alfa"],
+                "daily_availability_shift_morning" : key["Candidate - Daily availability shift morning Alfa"],
+                "daily_availability_shift_afternoon" : key["Candidate - Daily availability shift afternoon Alfa"],
+                "daily_availability_shift_night" : key["Candidate - Daily availability shift evening Alfa"],
+                "daily_availability_shift_overnight" : key["Candidate - Daily availability shift overnight Alfa"],
+                "group_interview" :  key["Candidate - Group Interview Comment"],
+                "municipality_address" : key["Candidate - Municipality (Address)"], 
+                "updated_at": datetime.now()
+                }
+                updated_users.append(update_user)
+        if saved_users != []:
+            db.bulk_insert_mappings(models.Volunteers, saved_users)
+            db.commit()
+        if updated_users != []:
+            db.bulk_update_mappings(models.Volunteers, updated_users)
+            db.commit()
     else:
         return { "status": status.HTTP_400_BAD_REQUEST, "result": "Duplicate ID", "message": duplicate_ids_excel}
 
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run(app, host="172.18.3.131", port=8001)

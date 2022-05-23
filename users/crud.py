@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from . import models
 
@@ -10,11 +11,10 @@ def get_user(db: Session, user_id: int):
 
 
 def filter_users(db: Session, requirement, operator, value):
-    print(requirement,operator, value, 'query get user filter func')
 
     if operator == '=':
         print('operator is =')
-        return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) == value).all()
+        return db.query(models.Volunteers).filter(and_(getattr(models.Volunteers, requirement) == value), (getattr(models.Volunteers, requirement) == value)).all()
     elif operator == '>':
         print('operator is >')
         return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) > value).all()

@@ -13,8 +13,7 @@ class StatusEnum(enum.Enum):
 class Volunteers(Base):
     __tablename__ = "volunteers"
 
-    id = Column(Integer, primary_key=True, index=True, nullable=False)
-    candidate_id = Column(Integer)
+    candidate_id = Column(Integer, primary_key=True, index=True, nullable=False)
     full_name = Column(String)
     checkpoint = Column(String)
     gender_for_accreditation = Column(String)
@@ -45,7 +44,7 @@ class Volunteers(Base):
     skill_1 = Column( String)
     skill_2 = Column(String)
     skill_3 = Column( String)
-    skill_4 = Column(String)
+    skill_4 = Column(String)    
     skill_5 = Column( String)
     skill_6 = Column(String)
     volunteer_experience = Column(String)

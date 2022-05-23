@@ -1,5 +1,7 @@
 
 from datetime import datetime
+from turtle import pen
+from typing import List
 import shutil
 import numpy as np
 from sqlalchemy import inspect, or_
@@ -53,66 +55,142 @@ def read_volunteer(user_id: int, db: Session = Depends(get_db)):
 
 
 @app.post('/filter-volunteers')
-def filter_volunteers(data: schemas.FilterList, db: Session = Depends(get_db)):
+def filter_volunteers(filter_list: List, db: Session = Depends(get_db)):
     matched_users = []
-    send_users = []
-    print(data.users, 'query over here..........')
-    for i in data.users: 
-        requirement = i.requirement
-        operator = i.operator
-        value = i.value 
-        if requirement == '' or operator=='' or value=='':
+    filtered_users = []
+    last_users = []
+
+    for filter in filter_list:
+        requirement = filter["requirement"]
+        operator = filter["operator"]
+
+        if requirement == '' or operator=='':
             return {"status": status.HTTP_400_BAD_REQUEST, "result": "Empty requirement"}
-
+        
         if requirement=='language' and operator == '=':
-            users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1 == value, 
-            models.Volunteers.additional_language_2 == value, models.Volunteers.additional_language_3 == value,
-            models.Volunteers.additional_language_4 == value)).all()
-            matched_users.append(users)
+            for value in filter["value"]:
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1 == value, 
+                models.Volunteers.additional_language_2 == value, models.Volunteers.additional_language_3 == value,
+                models.Volunteers.additional_language_4 == value)).all()
+                matched_users.append(users)
 
-        elif requirement=='language' and operator == 'contains':
-            users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1.contains(value), 
-            models.Volunteers.additional_language_2.contains(value), models.Volunteers.additional_language_3.contains(value),
-            models.Volunteers.additional_language_4.contains(value))).all()
-            matched_users.append(users)
+        if requirement=='language' and operator == 'contains':
+            for value in filter["value"]:
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1.contains(value), 
+                models.Volunteers.additional_language_2.contains(value), models.Volunteers.additional_language_3.contains(value),
+                models.Volunteers.additional_language_4.contains(value))).all()
+                matched_users.append(users)
         
         if requirement=='language_fluency_level' and operator=='=':
-            users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1_fluency_level == value, 
-            models.Volunteers.additional_language_2_fluency_level == value, models.Volunteers.additional_language_3_fluency_level == value,
-            models.Volunteers.additional_language_4_fluency_level == value)).all()
-            matched_users.append(users)
+            for value in filter["value"]:
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1_fluency_level == value, 
+                models.Volunteers.additional_language_2_fluency_level == value, models.Volunteers.additional_language_3_fluency_level == value,
+                models.Volunteers.additional_language_4_fluency_level == value)).all()
+                matched_users.append(users)
 
-        elif requirement=='language_fluency_level' and operator=='contains':
-            users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1_fluency_level.contains(value), 
-            models.Volunteers.additional_language_2_fluency_level.contains(value), models.Volunteers.additional_language_3_fluency_level.contains(value),
-            models.Volunteers.additional_language_4_fluency_level.contains(value))).all()
-            matched_users.append(users)
+        if requirement=='language_fluency_level' and operator=='contains':
+            for value in filter["value"]:
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1_fluency_level.contains(value), 
+                models.Volunteers.additional_language_2_fluency_level.contains(value), models.Volunteers.additional_language_3_fluency_level.contains(value),
+                models.Volunteers.additional_language_4_fluency_level.contains(value))).all()
+                matched_users.append(users)
 
         if requirement=='skill' and operator=='=':
-            users = db.query(models.Volunteers).filter(or_(models.Volunteers.skill_1 == value, 
-            models.Volunteers.skill_2 == value, models.Volunteers.skill_3 == value,
-            models.Volunteers.skill_4 == value, models.Volunteers.skill_5 == value,
-            models.Volunteers.skill_6 == value)).all()
-            matched_users.append(users)
+            print('I am here skill = if')
+            for value in filter["value"]:
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.skill_1 == value, 
+                models.Volunteers.skill_2 == value, models.Volunteers.skill_3 == value,
+                models.Volunteers.skill_4 == value, models.Volunteers.skill_5 == value,
+                models.Volunteers.skill_6 == value)).all()
+                matched_users.append(users)
         
-        elif requirement=='skill' and operator=='contains':
-            users = db.query(models.Volunteers).filter(or_(models.Volunteers.skill_1.contains(value), 
-            models.Volunteers.skill_2.contains(value), models.Volunteers.skill_3.contains(value),
-            models.Volunteers.skill_4.contains(value), models.Volunteers.skill_5.contains(value),
-            models.Volunteers.skill_6.contains(value))).all()
-            matched_users.append(users)
+
+        if requirement=='skill' and operator=='contains':
+            print('I am here skill contains if')
+            for value in filter["value"]:
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.skill_1.contains(value), 
+                models.Volunteers.skill_2.contains(value), models.Volunteers.skill_3.contains(value),
+                models.Volunteers.skill_4.contains(value), models.Volunteers.skill_5.contains(value),
+                models.Volunteers.skill_6.contains(value))).all()
+                matched_users.append(users)
+
+        print(matched_users, 'beforeee')
+        if matched_users != [] and requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level' :
+            print("first if")
+            print(matched_users)
+            for users in matched_users:
+                if users != []:
+                    for one_user in users: 
+                        filtered_users.append(one_user)
+            print(len(filtered_users), "len filtered users")
+
+            for value in filter["value"]: #second loop to get all values, otherwise will always get last value
+                for user in filtered_users:
+                        print(requirement, 'requirement')
+                        print(value, 'values')
+                        if operator == "=":
+                            if (getattr(user, requirement) == value):
+                                if user not in last_users:
+                                    last_users.append(user)
+                        elif operator == "contains":
+                            print("elif operator contains second loop")
+                            if value in (getattr(user, requirement)):
+                                if user not in last_users:
+                                    last_users.append(user)
+                        elif operator == ">":
+                            print('second loop operator >', (getattr(user, requirement)))
+                            if (getattr(user, requirement)) > value:
+                                if user not in last_users:
+                                    last_users.append(user)
+                                    print('appended')
+                        elif operator == "<":
+                            print('second loop operator <', (getattr(user, requirement)))
+                            if (getattr(user, requirement)) < value:
+                                if user not in last_users:
+                                    last_users.append(user)
+                                    print('appended')
+                        elif operator == "<=":
+                            if (getattr(user, requirement)) <= value:
+                                if user not in last_users:
+                                    last_users.append(user)
+                        elif operator == ">=":
+                            if (getattr(user, requirement)) >= value:
+                                if user not in last_users:
+                                    last_users.append(user)
+                print(len(last_users), 'len last') 
 
         if requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level':
-            user = filter_users(db, requirement=requirement, operator=operator, value=value)
-            if user != [] and user is not None:
-                if user not in matched_users:
-                    matched_users.append(user)
-                    print(matched_users, "...all matching users")
-                    
-    for users in matched_users:
-        for one_user in users:
-            send_users.append(one_user)
-    return send_users
+            print("second if")
+            if len(filter["value"]) > 1 and len(matched_users) == 0: #check len match users so it won't send request to db again if it is not empty
+                for value in filter["value"]:
+                    users = filter_users(db, requirement=requirement, operator=operator, value=value) 
+                    print(len(users), 'users')
+                    matched_users.append(users)   
+
+        if requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level' and len(filter["value"])==1 and len(matched_users) == 0:
+            value = filter["value"][0]
+            users = filter_users(db, requirement=requirement, operator=operator, value=value)
+            matched_users.append(users)
+            print(len(users), 'length of users if value length is 1')
+        
+    if filtered_users == [] and matched_users != []: #if filter is only language, skill or fluency_level
+        print(matched_users, 'asasasasas')
+
+        for users in matched_users:
+            for one_user in users: 
+                filtered_users.append(one_user)
+        return filtered_users
+    else:
+        return last_users
+    
+    # elif last_users != []:
+    #     print(len(last_users), 'last len')
+    #     return last_users
+    
+
+    
+
+
 
 
 @app.get('/volunteer-fields')
@@ -141,13 +219,17 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
     with open(f'{file.filename}', "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
+    print("got1 here")
+    print(datetime.now())
     data = pd.read_excel("assignment-data.xlsx", index_col=None)
     volunteer_data = data.astype(object).replace(np.nan, None)
 
+    print("got2 here")
     for name in volunteer_data.iterrows():  
         new_user_from_excel = name[1].to_dict()
         all_users_in_excel.append(new_user_from_excel)
     
+    print(datetime.now(), "for candidate ids")
     all_ids_excel = []
     duplicate_ids_excel = []
     for i in all_users_in_excel:
@@ -158,11 +240,14 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
             if id_value not in duplicate_ids_excel:
                 duplicate_ids_excel.append(id_value)
 
+    print(datetime.now(), 'before all')
     users = db.query(models.Volunteers).all()
+    print(datetime.now(), 'after all')
     all_candidate_ids_in_db = []
     for user in users:
         all_candidate_ids_in_db.append(user.candidate_id)
 
+    print(datetime.now())
     saved_users = []
     updated_users = []    
     if duplicate_ids_excel == []: 
@@ -170,7 +255,7 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
             candidate_id = key["Candidate - ID"]
             if candidate_id not in all_candidate_ids_in_db:
                 new_user = {
-                "candidate_id": key["Candidate - ID"],
+                "candidate_id": candidate_id,
                 "full_name": key["Candidate - Full Name"],
                 "checkpoint": key["Candidate - Checkpoint"],
                 "additional_language_1": key["Candidate - Additional Language 1"],
@@ -229,10 +314,8 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
                 }
                 saved_users.append(new_user)
             else:
-                user = db.query(models.Volunteers).filter(models.Volunteers.candidate_id == candidate_id).first()
                 update_user = {
-                "id": user.id,
-                "candidate_id": key["Candidate - ID"],
+                "candidate_id": candidate_id,
                 "full_name": key["Candidate - Full Name"],
                 "checkpoint": key["Candidate - Checkpoint"],
                 "additional_language_1": key["Candidate - Additional Language 1"],
@@ -291,9 +374,14 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
                 }
                 updated_users.append(update_user)
         if saved_users != []:
+            print(datetime.now(), "saving")
             db.bulk_insert_mappings(models.Volunteers, saved_users)
+            print(datetime.now())
             db.commit()
+            print(datetime.now())
         if updated_users != []:
+            print("updated users")
+            print(datetime.now())
             db.bulk_update_mappings(models.Volunteers, updated_users)
             db.commit()
     else:
@@ -303,4 +391,4 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="172.18.3.131", port=8001)
+    uvicorn.run(app, host="localhost", port=8001)

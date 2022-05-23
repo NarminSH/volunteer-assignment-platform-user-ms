@@ -15,12 +15,12 @@ services:
     ports:
       - 8080:8080
 
-  web:
-    build: .
-    command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    depends_on:
-      - vap-db
+  # web:
+  #   build: .
+  #   command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+  #   volumes:
+  #     - .:/code
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - vap-db

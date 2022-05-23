@@ -63,14 +63,6 @@ class Volunteers(BaseModel):
     role_offer_id: Optional[str] = None
 
 
-class FilterUser(BaseModel):
-    requirement: Optional[str] = None
-    operator: Optional[str] = None
-    value: Optional[str] = None
-
-
-class FilterList(BaseModel):
-    users: List[FilterUser]
 
 
 class UserCreate(BaseModel):

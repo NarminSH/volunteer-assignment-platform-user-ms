@@ -1,1 +1,1 @@
-web: uvicorn main:app --reload --port 8001
+web: uvicorn main:app 

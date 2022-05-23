@@ -1,6 +1,5 @@
 
 from datetime import datetime
-from turtle import pen
 from typing import List
 import shutil
 import numpy as np

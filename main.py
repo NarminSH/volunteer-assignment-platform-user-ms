@@ -15,6 +15,7 @@ from users.crud import get_user, filter_users, get_users
 from users import schemas
 from users import models
 
+
 app = FastAPI()
 
 origins = ["*"]
@@ -46,6 +47,7 @@ def read_volunteers(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
     return users
 
 
+
 @app.get('/volunteers/{user_id}')
 def read_volunteer(user_id: int, db: Session = Depends(get_db)):
     user = get_user(db=db, user_id=user_id)
@@ -54,17 +56,28 @@ def read_volunteer(user_id: int, db: Session = Depends(get_db)):
 
 
 @app.post('/filter-volunteers')
-def filter_volunteers(filter_list: List, db: Session = Depends(get_db)):
+def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 10, db: Session = Depends(get_db)):
     matched_users = []
     filtered_users = []
     last_users = []
+
+    start = (page_number-1) * page_size
+    end = start + page_size
+
+    if filter_list == []:
+        all_users = get_users(db=db)
+        print(len(all_users), "filter_list doesnot contain anything")
+        return all_users[start:end]
+
 
     for filter in filter_list:
         requirement = filter["requirement"]
         operator = filter["operator"]
 
-        if requirement == '' or operator=='':
-            return {"status": status.HTTP_400_BAD_REQUEST, "result": "Empty requirement"}
+        if requirement == '' and operator=='': #if page just opened
+            all_users = get_users(db=db)
+            print(len(all_users), "length")
+            return all_users[start:end]
         
         if requirement=='language' and operator == '=':
             for value in filter["value"]:
@@ -113,7 +126,6 @@ def filter_volunteers(filter_list: List, db: Session = Depends(get_db)):
                 models.Volunteers.skill_6.contains(value))).all()
                 matched_users.append(users)
 
-        print(matched_users, 'beforeee')
         if matched_users != [] and requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level' :
             print("first if")
             print(matched_users)
@@ -121,12 +133,10 @@ def filter_volunteers(filter_list: List, db: Session = Depends(get_db)):
                 if users != []:
                     for one_user in users: 
                         filtered_users.append(one_user)
-            print(len(filtered_users), "len filtered users")
 
             for value in filter["value"]: #second loop to get all values, otherwise will always get last value
                 for user in filtered_users:
-                        print(requirement, 'requirement')
-                        print(value, 'values')
+                        print("Value is", value, " inside for loop")
                         if operator == "=":
                             if (getattr(user, requirement) == value):
                                 if user not in last_users:
@@ -163,7 +173,7 @@ def filter_volunteers(filter_list: List, db: Session = Depends(get_db)):
             if len(filter["value"]) > 1 and len(matched_users) == 0: #check len match users so it won't send request to db again if it is not empty
                 for value in filter["value"]:
                     users = filter_users(db, requirement=requirement, operator=operator, value=value) 
-                    print(len(users), 'users')
+                    print(len(users), 'last users when value length is more than one')
                     matched_users.append(users)   
 
         if requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level' and len(filter["value"])==1 and len(matched_users) == 0:
@@ -171,20 +181,19 @@ def filter_volunteers(filter_list: List, db: Session = Depends(get_db)):
             users = filter_users(db, requirement=requirement, operator=operator, value=value)
             matched_users.append(users)
             print(len(users), 'length of users if value length is 1')
-        
-    if filtered_users == [] and matched_users != []: #if filter is only language, skill or fluency_level
-        print(matched_users, 'asasasasas')
 
+
+
+    if filtered_users == [] and matched_users != []: #if filter is only language, skill or fluency_level
         for users in matched_users:
             for one_user in users: 
                 filtered_users.append(one_user)
-        return filtered_users
+        print(start, "start count over here")
+        print(end, "end count over here")
+        return filtered_users[start:end]
     else:
-        return last_users
+        return last_users[start:end]
     
-    # elif last_users != []:
-    #     print(len(last_users), 'last len')
-    #     return last_users
     
 
     

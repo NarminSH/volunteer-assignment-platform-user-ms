@@ -82,7 +82,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             all_users = get_users(db=db)
             response = {
             "data": all_users[start:end],
-            "total_pages": math.ceil(len(all_users) / page_size)
+            "total_pages": len(all_users)
             }
             return response
         
@@ -197,14 +197,14 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                 filtered_users.append(one_user)
         response = {
             "data": filtered_users[start:end],
-            "total_pages": math.ceil(len(filtered_users) / page_size)
+            "total_pages": len(filtered_users) 
         }
         return response
     else:
         print("returning last users list in else statement", last_users, math.ceil(len(last_users) // page_size))
         response = {
             "data": last_users[start:end],
-            "total_pages": math.ceil(len(last_users) / page_size)
+            "total_pages": len(last_users)
         }
         return response
     
@@ -406,22 +406,24 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
 
 
 
-
-# def record_history(db: Session = Depends(get_db)):
-#     users = []
-#     users_db = db.query(models.Volunteers).all()
-#     history_db = db.query(models.Histories).all() 
-#     for user in users_db:
-#         for history in history_db:
-#             if user.candidate_id == history.user_id:
-#                 print(user.status)
-#                 print(user.)
-#     user = {
-#         "user_id": "id",
-#         "status": "stat",
-#         "role_offer_id": "role_id"
-#     }
+@app.get('/record-history')
+def record_history(db: Session = Depends(get_db)):
+    users = []
+    users_db = db.query(models.Volunteers).all()
+    history_db = db.query(models.Histories).all() 
+    for user in users_db:
+        for history in history_db:
+            if user.candidate_id == history.user_id:
+                print(user.status.name, 'user')
+                print(history.status, 'history')
+                if user.status.name == history.status:
+                    print('abcdfh')
+    # user = {
+    #     "user_id": "id",
+    #     "status": "stat",
+    #     "role_offer_id": "role_id"
+    # }
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="172.18.3.144", port=8001)
+    uvicorn.run(app, host="localhost", port=8001)

@@ -41,8 +41,8 @@ def get_db():
 
 
 @app.get('/volunteers')
-def read_volunteers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = get_users(db, skip=skip, limit=limit)
+def read_volunteers(db: Session = Depends(get_db)):
+    users = get_users(db)
     return users
 
 
@@ -58,7 +58,6 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     matched_users = []
     filtered_users = []
     last_users = []
-    print(filter_list)
 
     start = (page_number-1) * page_size
     end = start + page_size

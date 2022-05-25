@@ -41,8 +41,8 @@ def get_db():
 
 
 @app.get('/volunteers')
-def read_volunteers(db: Session = Depends(get_db)):
-    users = get_users(db)
+def read_volunteers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    users = get_users(db, skip=skip, limit=limit)
     return users
 
 
@@ -58,6 +58,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     matched_users = []
     filtered_users = []
     last_users = []
+    print(filter_list)
 
     start = (page_number-1) * page_size
     end = start + page_size
@@ -200,7 +201,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
         }
         return response
     else:
-        print("returning last users list in else statement", last_users, math.ceil(len(last_users) // page_size))
+        print("returning last users list in else statement", len(last_users))
         response = {
             "data": last_users[start:end],
             "total_pages": len(last_users)

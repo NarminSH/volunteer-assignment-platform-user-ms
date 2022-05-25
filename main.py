@@ -58,26 +58,27 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     matched_users = []
     filtered_users = []
     last_users = []
+    print(filter_list)
 
     start = (page_number-1) * page_size
     end = start + page_size
 
-    if filter_list == []:
-        all_users = get_users(db=db)
-        print(len(all_users), "filter_list does not contain anything")
-        print(math.ceil(len(all_users) / page_size))
-        response = {
-            "data": all_users[start:end],
-            "total_pages": math.ceil(len(all_users) / page_size)
-        }
-        return all_users[start:end]
-
+    # for filter in fil
+        # all_users = get_users(db=db)
+        # print(len(all_users), "filter_list does not contain anything")
+        # print(math.ceil(len(all_users) / page_size))
+        # response = {
+        #     "data": all_users[start:end],
+        #     "total_pages": math.ceil(len(all_users) / page_size)
+        # }
+        # return response
 
     for filter in filter_list:
-        requirement = filter["requirement"]
+        requirement = filter["requirement_name"]
         operator = filter["operator"]
 
-        if requirement == '' and operator=='': #if page just opened
+
+        if requirement == 'Requirement' and operator=='Operator': #if page just opened
             all_users = get_users(db=db)
             response = {
             "data": all_users[start:end],
@@ -207,11 +208,6 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
         }
         return response
     
-    
-
-    
-
-
 
 
 @app.get('/volunteer-fields')
@@ -411,5 +407,21 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
 
 
 
+# def record_history(db: Session = Depends(get_db)):
+#     users = []
+#     users_db = db.query(models.Volunteers).all()
+#     history_db = db.query(models.Histories).all() 
+#     for user in users_db:
+#         for history in history_db:
+#             if user.candidate_id == history.user_id:
+#                 print(user.status)
+#                 print(user.)
+#     user = {
+#         "user_id": "id",
+#         "status": "stat",
+#         "role_offer_id": "role_id"
+#     }
+
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8001)
+    uvicorn.run(app, host="172.18.3.144", port=8001)

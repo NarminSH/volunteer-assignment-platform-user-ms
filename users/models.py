@@ -1,4 +1,5 @@
 
+from datetime import datetime
 import enum
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Enum
 from users.database import Base
@@ -14,8 +15,10 @@ class Volunteers(Base):
     __tablename__ = "volunteers"
 
     candidate_id = Column(Integer, primary_key=True, index=True, nullable=False)
+    # nationality = Column(String)
+    # country_of_residence = Column(String)
     full_name = Column(String)
-    checkpoint = Column(String)
+    checkpoint = Column(String) #?
     gender_for_accreditation = Column(String)
     dob = Column(String)
     delivery_score = Column(Integer)
@@ -79,3 +82,11 @@ class Volunteers(Base):
 
 
 
+# class Histories(Base):
+#     __tablename__ = "histories"
+
+#     id = Column(Integer, primary_key=True, index=True, nullable=False)
+#     user_id = Column(Integer)
+#     status = Column(String)
+#     role_offer_id = Column(String)
+#     created_at = Column(DateTime, default=datetime.now())

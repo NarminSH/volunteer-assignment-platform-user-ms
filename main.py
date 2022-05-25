@@ -12,9 +12,8 @@ from sqlalchemy.orm import Session
 from users import models
 from users.database import engine, SessionLocal
 from users.crud import get_user, filter_users, get_users
-from users import schemas
 from users import models
-
+import math
 
 app = FastAPI()
 
@@ -54,7 +53,6 @@ def read_volunteer(user_id: int, db: Session = Depends(get_db)):
     return user    
 
 
-
 @app.post('/filter-volunteers')
 def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 10, db: Session = Depends(get_db)):
     matched_users = []
@@ -66,7 +64,12 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
 
     if filter_list == []:
         all_users = get_users(db=db)
-        print(len(all_users), "filter_list doesnot contain anything")
+        print(len(all_users), "filter_list does not contain anything")
+        print(math.ceil(len(all_users) / page_size))
+        response = {
+            "data": all_users[start:end],
+            "total_pages": math.ceil(len(all_users) / page_size)
+        }
         return all_users[start:end]
 
 
@@ -76,8 +79,11 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
 
         if requirement == '' and operator=='': #if page just opened
             all_users = get_users(db=db)
-            print(len(all_users), "length")
-            return all_users[start:end]
+            response = {
+            "data": all_users[start:end],
+            "total_pages": math.ceil(len(all_users) / page_size)
+            }
+            return response
         
         if requirement=='language' and operator == '=':
             for value in filter["value"]:
@@ -180,7 +186,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             value = filter["value"][0]
             users = filter_users(db, requirement=requirement, operator=operator, value=value)
             matched_users.append(users)
-            print(len(users), 'length of users if value length is 1')
+            print(len(users), 'length of users when value length is 1')
 
 
 
@@ -188,11 +194,18 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
         for users in matched_users:
             for one_user in users: 
                 filtered_users.append(one_user)
-        print(start, "start count over here")
-        print(end, "end count over here")
-        return filtered_users[start:end]
+        response = {
+            "data": filtered_users[start:end],
+            "total_pages": math.ceil(len(filtered_users) / page_size)
+        }
+        return response
     else:
-        return last_users[start:end]
+        print("returning last users list in else statement", last_users, math.ceil(len(last_users) // page_size))
+        response = {
+            "data": last_users[start:end],
+            "total_pages": math.ceil(len(last_users) / page_size)
+        }
+        return response
     
     
 

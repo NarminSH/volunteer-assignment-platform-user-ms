@@ -63,15 +63,6 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     start = (page_number-1) * page_size
     end = start + page_size
 
-    # for filter in fil
-        # all_users = get_users(db=db)
-        # print(len(all_users), "filter_list does not contain anything")
-        # print(math.ceil(len(all_users) / page_size))
-        # response = {
-        #     "data": all_users[start:end],
-        #     "total_pages": math.ceil(len(all_users) / page_size)
-        # }
-        # return response
 
     for filter in filter_list:
         requirement = filter["requirement_name"]

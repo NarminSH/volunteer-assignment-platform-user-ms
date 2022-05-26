@@ -1,9 +1,10 @@
 
 from datetime import datetime
+import os
 from typing import List
 import shutil
 import numpy as np
-from sqlalchemy import inspect, or_
+from sqlalchemy import inspect, or_, text
 import pandas as pd
 import uvicorn
 from fastapi import FastAPI, Depends, File, UploadFile, status
@@ -13,7 +14,7 @@ from users import models
 from users.database import engine, SessionLocal
 from users.crud import get_user, filter_users, get_users
 from users import models
-import math
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -490,6 +491,38 @@ def record_history(db: Session = Depends(get_db)):
     print(len(users))
     db.bulk_insert_mappings(models.Histories, users)
     db.commit()
+
+
+
+
+@app.get('/export-volunteers')
+def export_volunteers(db: Session = Depends(get_db)):
+    ids = []
+    statuses = []
+    role_offers = []
+    col1 = "id"
+    col2 = "status"
+    col3 = "role_offer_id"
+
+    users = db.query(models.Volunteers).from_statement(
+    text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
+    for user in users:
+        print(user.candidate_id, user.status, user.role_offer_id, "All users in export data")
+        ids.append(user.candidate_id)
+        statuses.append(user.status.name)
+        role_offers.append(user.role_offer_id)
+
+    data = pd.DataFrame({col1:ids,col2:statuses,col3:role_offers})
+
+    data.to_excel('files/export_data.xlsx', sheet_name='sheet1', index=False)
+
+    path = "/Users/narmin/volunteer-assignment-platform-user-integration"
+    file_path = os.path.join(path, 'files/export_data.xlsx')
+    
+    if os.path.exists(file_path):
+        return FileResponse(file_path, filename="export_data.xlsx", media_type="xlsx")
+    return {"error": "File not found!"}
+    
 
 
 if __name__ == "__main__":

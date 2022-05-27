@@ -521,10 +521,13 @@ def export_volunteers(db: Session = Depends(get_db)):
     users = db.query(models.Volunteers).from_statement(
     text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
     for user in users:
-        print(user.candidate_id, user.status, user.role_offer_id, "All users in export data")
-        ids.append(user.candidate_id)
-        statuses.append(user.status.name)
-        role_offers.append(user.role_offer_id)
+        if user.candidate_id is not None and user.status.name is not None and user.role_offer_id is not None:
+            print(user.candidate_id, user.status, user.role_offer_id, "All users in export data")
+            ids.append(user.candidate_id)
+            statuses.append(user.status.name)
+            role_offers.append(user.role_offer_id)
+        else:
+            print('user that has none status or role offer', user.candidate_id)
 
     data = pd.DataFrame({col1:ids,col2:statuses,col3:role_offers})
 

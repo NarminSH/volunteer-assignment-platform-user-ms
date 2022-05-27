@@ -1,6 +1,5 @@
 
 from datetime import datetime
-from operator import le
 import os.path
 from typing import List
 import shutil
@@ -209,23 +208,11 @@ def read_fields():
     return columns
 
 
-@app.get('/free-volunteers')
-def filter_free_users(db: Session = Depends(get_db)):
-    users = db.query(models.Volunteers).filter(models.Volunteers.status == "Free").all()
-    return users
-    
-
-
-@app.get('/occupied-volunteers')
-def filter_occupied_users(db: Session = Depends(get_db)):
-    users = db.query(models.Volunteers).filter(or_(models.Volunteers.status == "Assign", models.Volunteers.status == "Waitlist")).all()
-    return users
-
 
 
 @app.post('/import-users-data')
 def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), db: Session = Depends(get_db)):
-
+ 
     background_task.add_task(record_history, db=db)
 
     all_users_in_excel = []
@@ -354,7 +341,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "interview_notes": key["Interview Notes / Comments"],
                 "interview_name": key["Interviewer Name"],
                 "why_rejected_candidate": key["Explain us why you have rejected the candidate in detail"],
-                "role_offer_status": key["Role Offer Status"],
+                "status": key["Role Offer Status"],
                 "municipality_address" : key["Municipality Address"], 
                 "created_at": datetime.now()
                 }
@@ -449,7 +436,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "interview_notes": key["Interview Notes / Comments"],
                 "interview_name": key["Interviewer Name"],
                 "why_rejected_candidate": key["Explain us why you have rejected the candidate in detail"],
-                "role_offer_status": key["Role Offer Status"],
+                "status": key["Role Offer Status"],
                 "municipality_address" : key["Municipality Address"],
                 "updated_at": datetime.now()
                 }
@@ -474,6 +461,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
 
 
 
+
 @app.get('/record-history')
 def record_history(db: Session = Depends(get_db)):
     updated_users = []
@@ -492,7 +480,7 @@ def record_history(db: Session = Depends(get_db)):
                         duplicate_candidate_ids.append(user.candidate_id)
                         updated_user = {
                             "user_id": user.candidate_id,
-                            "status": user.status.name,
+                            "status": user.status,
                             "role_offer_id": user.role_offer_id,
                             "created_at": datetime.now()
                         }
@@ -500,7 +488,7 @@ def record_history(db: Session = Depends(get_db)):
         else:
             new_user = {
             "user_id": user.candidate_id,
-            "status": user.status.name,
+            "status": user.status,
             "role_offer_id": user.role_offer_id,
             "created_at": datetime.now()
             }
@@ -531,13 +519,13 @@ def export_volunteers(db: Session = Depends(get_db)):
     users = db.query(models.Volunteers).from_statement(
     text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
     for user in users:
-        if user.candidate_id is not None and user.status is not None and user.role_offer_id is not None:
+        # if user.candidate_id is not None and user.status is not None and user.role_offer_id is not None:
             print(user.candidate_id, user.status, user.role_offer_id, "All users in export data")
             ids.append(user.candidate_id)
             statuses.append(user.status.name)
             role_offers.append(user.role_offer_id)
-        else:
-            print('user that has none status or role offer', user.candidate_id)
+        # else:
+        #     print('user that has none status or role offer', user.candidate_id)
 
     data = pd.DataFrame({col1:ids,col2:statuses,col3:role_offers})
 

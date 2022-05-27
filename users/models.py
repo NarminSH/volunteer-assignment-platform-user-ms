@@ -5,10 +5,28 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, Enum, Text
 from users.database import Base
 
 
-class StatusEnum(enum.Enum):
-    Assign = "Assigned"
-    Waitlist = "Waitlisted"
-    Free = "Free"
+# class StatusEnum(enum.Enum):
+#     Assigned = "Assigned"
+#     Pending = "Waitlisted"
+#     Accepted = "Accepted"
+#     Confirmed = "Confirmed"
+#     Complete = "Complete"
+#     Declined = "Declined"
+#     Removed = "Removed"
+#     Expired = "Expired"
+#     Waitlist_offered = "Waitlist Offered"
+#     Waitlist_accepted = "Waitlist Accepted"
+#     Waitlist_declined = "Waitlist Declined"
+#     Pre_assigned = "Pre-assigned"
+#     Not_approved = "Not Approved"
+#     Waitlist_assigned = "Waitlist Assigned"
+
+
+#     class __metaclass__(type):
+#         def __getattr__(self, name):
+#             if name in self.values:
+#                 return 'here'
+
 
 
 class Volunteers(Base):
@@ -103,9 +121,8 @@ class Volunteers(Base):
     interview_notes = Column(String)
     interview_name = Column(String)
     why_rejected_candidate = Column(String)
-    role_offer_status = Column(String)
     role_offer_id = Column(Integer)
-    status = Column(Enum(StatusEnum), default=StatusEnum.Free.name)
+    status = Column(String)
     created_at = Column(DateTime)
     is_deleted = Column(Boolean, default=False)
     deleted_at = Column(DateTime)

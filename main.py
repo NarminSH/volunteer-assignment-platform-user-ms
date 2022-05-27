@@ -7,7 +7,7 @@ import numpy as np
 from sqlalchemy import inspect, or_, text
 import pandas as pd
 import uvicorn
-from fastapi import FastAPI, Depends, File, UploadFile, status
+from fastapi import FastAPI, Depends, File, UploadFile, status, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from users import models
@@ -250,14 +250,11 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
                 duplicate_ids_excel.append(id_value)
 
     print(datetime.now(), 'before all')
-    users = db.query(models.Volunteers).all()
-    print(datetime.now(), 'after all')
-    print(len(users), 'all users in db')
-    all_candidate_ids_in_db = []
-    for user in users:
-        all_candidate_ids_in_db.append(user.candidate_id)
 
-    print(datetime.now())
+    all_candidate_ids_in_db = db.scalars(db.query(models.Volunteers.candidate_id)).all()
+
+    print(datetime.now(), 'after all')
+ 
     saved_users = []
     updated_users = []    
     if duplicate_ids_excel == []: 
@@ -473,25 +470,42 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
 
 @app.get('/record-history')
 def record_history(db: Session = Depends(get_db)):
-    users = []
+    updated_users = []
     users_db = db.query(models.Volunteers).all()
     history_db = db.query(models.Histories).all() 
-    for user in users_db:
-        for history in history_db:
-            if user.candidate_id == history.user_id:
-                print(user.status.name, 'user')
-                print(history.status, 'history')
-                if user.status.name != history.status:
-                    user = {
-                        "user_id": user.candidate_id,
-                        "status": user.status.name,
-                        "role_offer_id": user.role_offer_id
-                    }
-                    users.append(user)
-    print(len(users))
-    db.bulk_insert_mappings(models.Histories, users)
-    db.commit()
+    history_db_ids = db.scalars(db.query(models.Histories.user_id)).all()
+    new_users = []
 
+    print('first here')
+    for user in users_db:
+        if user.candidate_id in history_db_ids:
+            for history in history_db:
+                if user.candidate_id == history.user_id:
+                    if user.status.name != history.status:
+                        updated_user = {
+                            "user_id": user.candidate_id,
+                            "status": user.status.name,
+                            "role_offer_id": user.role_offer_id,
+                            "created_at": datetime.now()
+                        }
+                        updated_users.append(updated_user)
+        else:
+            print('here')
+            new_user = {
+            "user_id": user.candidate_id,
+            "status": user.status.name,
+            "role_offer_id": user.role_offer_id,
+            "created_at": datetime.now()
+            }
+            new_users.append(new_user)
+            print('else statement')
+            print(user, 'userrrbeforrereeee')
+    if new_users != []:
+        db.bulk_insert_mappings(models.Histories, new_users)
+        db.commit()
+    if updated_users != []:
+        db.bulk_insert_mappings(models.Histories, updated_users)
+        db.commit()
 
 
 
@@ -525,5 +539,7 @@ def export_volunteers(db: Session = Depends(get_db)):
     
 
 
+
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8001)
+    uvicorn.run(app, host="localhost1", port=8001)

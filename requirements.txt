@@ -38,5 +38,6 @@ SQLAlchemy-Utils==0.38.2
 starlette==0.17.1
 tomli==2.0.1
 typing-extensions==4.2.0
+typish==1.9.3
 urllib3==1.26.9
 uvicorn==0.17.6

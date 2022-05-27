@@ -1,5 +1,6 @@
 
 from datetime import datetime
+from operator import le
 import os.path
 from typing import List
 import shutil
@@ -223,7 +224,10 @@ def filter_occupied_users(db: Session = Depends(get_db)):
 
 
 @app.post('/import-users-data')
-def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
+def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), db: Session = Depends(get_db)):
+
+    background_task.add_task(record_history, db=db)
+
     all_users_in_excel = []
     with open(f'{file.filename}', "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
@@ -459,12 +463,14 @@ def import_data(file: UploadFile = File(...), db: Session = Depends(get_db)):
         if updated_users != []:
             print("updated users")
             print(datetime.now())
+            print(len(updated_users), "length of updated users before bulk updating")
             db.bulk_update_mappings(models.Volunteers, updated_users)
             print(datetime.now(), "before committing updated users")
             db.commit()
             print(datetime.now(), "saved updated users")
     else:
-        return { "status": status.HTTP_400_BAD_REQUEST, "result": "Duplicate ID", "message": duplicate_ids_excel}
+        return { "statusCode": status.HTTP_400_BAD_REQUEST, "value": "DuplicateID", "message": duplicate_ids_excel}
+
 
 
 
@@ -475,13 +481,15 @@ def record_history(db: Session = Depends(get_db)):
     history_db = db.query(models.Histories).all() 
     history_db_ids = db.scalars(db.query(models.Histories.user_id)).all()
     new_users = []
+    duplicate_candidate_ids = [] #bcz user_id is not unique in history table there can be several objects with same ids, append when unique
 
-    print('first here')
+    print('record-history before for')
     for user in users_db:
         if user.candidate_id in history_db_ids:
             for history in history_db:
-                if user.candidate_id == history.user_id:
+                if user.candidate_id == history.user_id and user.candidate_id not in duplicate_candidate_ids:
                     if user.status.name != history.status:
+                        duplicate_candidate_ids.append(user.candidate_id)
                         updated_user = {
                             "user_id": user.candidate_id,
                             "status": user.status.name,
@@ -490,7 +498,6 @@ def record_history(db: Session = Depends(get_db)):
                         }
                         updated_users.append(updated_user)
         else:
-            print('here')
             new_user = {
             "user_id": user.candidate_id,
             "status": user.status.name,
@@ -501,11 +508,14 @@ def record_history(db: Session = Depends(get_db)):
             print('else statement')
             print(user, 'userrrbeforrereeee')
     if new_users != []:
+        print('new users in saving', len(new_users))
         db.bulk_insert_mappings(models.Histories, new_users)
         db.commit()
     if updated_users != []:
+        print('updating users in saving', len(updated_users))
         db.bulk_insert_mappings(models.Histories, updated_users)
         db.commit()
+
 
 
 
@@ -539,7 +549,7 @@ def export_volunteers(db: Session = Depends(get_db)):
         file_path = 'files/export_data.xlsx'
         print('file exists, returning export file in export-volunteers')
         return FileResponse(file_path, filename="export_data.xlsx", media_type="xlsx")
-    return { "status": status.HTTP_404_NOT_FOUND, "result": "File doesn't exist"}
+    return { "statusCode": status.HTTP_404_NOT_FOUND, "value": "notexist"}
     
 
 

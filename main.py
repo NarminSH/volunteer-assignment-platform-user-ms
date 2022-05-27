@@ -521,7 +521,7 @@ def export_volunteers(db: Session = Depends(get_db)):
     users = db.query(models.Volunteers).from_statement(
     text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
     for user in users:
-        if user.candidate_id is not None and user.status.name is not None and user.role_offer_id is not None:
+        if user.candidate_id is not None and user.status is not None and user.role_offer_id is not None:
             print(user.candidate_id, user.status, user.role_offer_id, "All users in export data")
             ids.append(user.candidate_id)
             statuses.append(user.status.name)

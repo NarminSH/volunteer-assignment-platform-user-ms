@@ -76,7 +76,7 @@ class Volunteers(Base):
     motivation_score = Column(Integer)
     fwc_availability_pre_tournament_one = Column(String)
     fwc_availability_pre_tournament_two = Column(String)
-    availability_during_tournament = Column( String)
+    availability_during_tournament = Column(String)
     daily_availability_shift_morning = Column(String)
     daily_availability_shift_afternoon = Column(String)
     daily_availability_shift_evening = Column(String)

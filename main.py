@@ -1,6 +1,6 @@
 
 from datetime import datetime
-import os
+import os.path
 from typing import List
 import shutil
 import numpy as np
@@ -530,16 +530,17 @@ def export_volunteers(db: Session = Depends(get_db)):
 
     data.to_excel('files/export_data.xlsx', sheet_name='sheet1', index=False)
 
-    path = "/Users/narmin/volunteer-assignment-platform-user-integration"
-    file_path = os.path.join(path, 'files/export_data.xlsx')
+    file_exists = os.path.exists('files/export_data.xlsx')
     
-    if os.path.exists(file_path):
+    if file_exists:
+        file_path = 'files/export_data.xlsx'
+        print('file exists, returning export file in export-volunteers')
         return FileResponse(file_path, filename="export_data.xlsx", media_type="xlsx")
-    return {"error": "File not found!"}
+    return { "status": status.HTTP_404_NOT_FOUND, "result": "File doesn't exist"}
     
 
 
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost1", port=8001)
+    uvicorn.run(app, host="localhost", port=8001)

@@ -504,6 +504,8 @@ def record_history(db: Session = Depends(get_db)):
         db.bulk_insert_mappings(models.Histories, updated_users)
         db.commit()
 
+    print('finished recording history')
+
 
 
 
@@ -544,6 +546,8 @@ def export_volunteers(db: Session = Depends(get_db)):
 @app.get('/check-role')
 def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
 
+    print('inside check role func')
+
     background_task.add_task(record_history, db=db)
 
     updated_users = []
@@ -567,5 +571,13 @@ def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
 
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8001)
+@app.get('/user-history/{candidate_id}')
+def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
+    histories = db.query(models.Histories).filter(models.Histories.user_id == candidate_id).all()
+    return histories
+
+
+
+
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="localhost", port=8001)

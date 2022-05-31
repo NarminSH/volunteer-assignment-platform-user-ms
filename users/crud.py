@@ -6,8 +6,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 1000):
     return db.query(models.Volunteers).offset(skip).limit(limit).all()
 
 
-def get_user(db: Session, user_id: int):
-    return db.query(models.Volunteers).filter(models.Volunteers.id == user_id).first()
+def get_user(db: Session, candidate_id: int):
+    return db.query(models.Volunteers).filter(models.Volunteers.candidate_id == candidate_id).first()
 
 
 def filter_users(db: Session, requirement, operator, value):

@@ -549,7 +549,6 @@ def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
     updated_users = []
     all_users = db.query(models.Volunteers).all()
     for user in all_users:
-        print(user.status)
         if user.status is None and user.role_offer_id is not None:
             print(user.candidate_id, 'candidate id in check role')
             update_user = {

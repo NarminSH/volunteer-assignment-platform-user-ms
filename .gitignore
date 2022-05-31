@@ -3,4 +3,6 @@ venv/
 env/
 __pycache__
 .venv/
-.env-prod
+.env-prod/
+.env/
+.venv/

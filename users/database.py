@@ -15,8 +15,7 @@ POSTGRES_PORT=os.getenv('POSTGRES_PORT')
 
 SQLALCHEMY_DATABASE_URL = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}'
 
- ## "postgresql://narmin:narmin123@localhost/vapdb"
- ##"postgresql://rujaajmekrjdhl:235d76e58f29e1a531d66a2ea54040744803287fad1051041108669ed6edc821@ec2-52-3-200-138.compute-1.amazonaws.com/dktkert4drefj"
+
 
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

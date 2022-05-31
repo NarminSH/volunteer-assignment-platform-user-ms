@@ -28,7 +28,7 @@ from users.database import Base
 #                 return 'here'
 
 
-
+#max character 4500 char
 class Volunteers(Base):
     __tablename__ = "volunteers"
 

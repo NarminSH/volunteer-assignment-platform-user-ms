@@ -119,7 +119,6 @@ class Volunteers(Base):
     recommend_as_volunteer = Column(String)
     rejection_justification = Column(String)
     interview_notes = Column(String)
-    interview_name = Column(String)
     why_rejected_candidate = Column(String)
     role_offer_id = Column(Integer)
     status = Column(String)

@@ -213,7 +213,8 @@ def read_fields():
 @app.post('/import-users-data')
 def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), db: Session = Depends(get_db)):
  
-    background_task.add_task(record_history, db=db)
+    background_task.add_task(check_role, db=db, background_task=background_task)
+    
 
     all_users_in_excel = []
     with open(f'{file.filename}', "wb") as buffer:
@@ -460,8 +461,6 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
 
 
 
-
-
 @app.get('/record-history')
 def record_history(db: Session = Depends(get_db)):
     updated_users = []
@@ -469,15 +468,18 @@ def record_history(db: Session = Depends(get_db)):
     history_db = db.query(models.Histories).all() 
     history_db_ids = db.scalars(db.query(models.Histories.user_id)).all()
     new_users = []
-    duplicate_candidate_ids = [] #bcz user_id is not unique in history table there can be several objects with same ids, append when unique
+    existing_candidate_ids = [] #bcz user_id is not unique in history table there can be several objects with same ids, append and check to be unique
 
-    print('record-history before for')
+    
+    print('record-history before for loop')
+    print(len(users_db))
+    print(len(history_db))
     for user in users_db:
         if user.candidate_id in history_db_ids:
             for history in history_db:
-                if user.candidate_id == history.user_id and user.candidate_id not in duplicate_candidate_ids:
-                    if user.status.name != history.status:
-                        duplicate_candidate_ids.append(user.candidate_id)
+                if user.candidate_id == history.user_id and user.candidate_id not in existing_candidate_ids:
+                    if user.status != history.status:
+                        existing_candidate_ids.append(user.candidate_id)
                         updated_user = {
                             "user_id": user.candidate_id,
                             "status": user.status,
@@ -494,11 +496,11 @@ def record_history(db: Session = Depends(get_db)):
             }
             new_users.append(new_user)
             print('else statement')
-            print(user, 'userrrbeforrereeee')
     if new_users != []:
         print('new users in saving', len(new_users))
         db.bulk_insert_mappings(models.Histories, new_users)
         db.commit()
+        print("committed in record history ")
     if updated_users != []:
         print('updating users in saving', len(updated_users))
         db.bulk_insert_mappings(models.Histories, updated_users)
@@ -518,14 +520,14 @@ def export_volunteers(db: Session = Depends(get_db)):
 
     users = db.query(models.Volunteers).from_statement(
     text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
+
     for user in users:
-        # if user.candidate_id is not None and user.status is not None and user.role_offer_id is not None:
+        print(user.status)
+        if user.status is not None:
             print(user.candidate_id, user.status, user.role_offer_id, "All users in export data")
             ids.append(user.candidate_id)
-            statuses.append(user.status.name)
+            statuses.append(user.status)
             role_offers.append(user.role_offer_id)
-        # else:
-        #     print('user that has none status or role offer', user.candidate_id)
 
     data = pd.DataFrame({col1:ids,col2:statuses,col3:role_offers})
 
@@ -540,6 +542,31 @@ def export_volunteers(db: Session = Depends(get_db)):
     return { "statusCode": status.HTTP_404_NOT_FOUND, "value": "notexist"}
     
 
+
+@app.get('/check-role')
+def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
+
+    background_task.add_task(record_history, db=db)
+
+    updated_users = []
+    all_users = db.query(models.Volunteers).all()
+    for user in all_users:
+        print(user.status)
+        if user.status is None and user.role_offer_id is not None:
+            print(user.candidate_id, 'candidate id in check role')
+            update_user = {
+            "candidate_id": user.candidate_id,
+            "role_offer_id": None,
+            "updated_at": datetime.now()
+            }
+            updated_users.append(update_user)
+
+
+    if updated_users != []:
+        print('checking role offer to match with statuses, updating length is', len(updated_users))
+        db.bulk_update_mappings(models.Volunteers, updated_users)
+        db.commit()
+        print('committed updated users in check-role')
 
 
 

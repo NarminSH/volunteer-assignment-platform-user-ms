@@ -677,7 +677,10 @@ def record_history(db: Session = Depends(get_db)):
         if user.candidate_id in history_db_ids:
             for history in history_db:
                 if user.candidate_id == history.user_id and user.candidate_id not in existing_candidate_ids:
-                    if user.status != history.status:
+                    descending = db.query(models.Histories).filter(models.Histories.user_id == user.candidate_id).order_by(models.Histories.id.desc())
+                    last_item = descending.first()
+                    if user.status != last_item.status:
+                        print(user.status, last_item.status)
                         existing_candidate_ids.append(user.candidate_id)
                         updated_user = {
                             "user_id": user.candidate_id,
@@ -696,12 +699,12 @@ def record_history(db: Session = Depends(get_db)):
             new_users.append(new_user)
             print('else statement')
     if new_users != []:
-        print('new users in saving', len(new_users))
+        print('new users in saving record-history', len(new_users))
         db.bulk_insert_mappings(models.Histories, new_users)
-        db.commit()
+        db.commit() 
         print("committed in record history ")
     if updated_users != []:
-        print('updating users in saving', len(updated_users))
+        print('updating users in saving record-history', len(updated_users))
         db.bulk_insert_mappings(models.Histories, updated_users)
         db.commit()
 

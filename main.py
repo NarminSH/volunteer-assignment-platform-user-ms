@@ -70,7 +70,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
         operator = filter["operator"]
 
 
-        if requirement == 'Requirement' and operator=='Operator': #if page just opened
+        if requirement == 'Requirement' and operator=='Operator': #if page has just opened
             all_users = get_users(db=db)
             response = {
             "data": all_users[start:end],
@@ -163,6 +163,10 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                                     last_users.append(user)
                         elif operator == ">=":
                             if (getattr(user, requirement)) >= value:
+                                if user not in last_users:
+                                    last_users.append(user)
+                        elif operator == "not":
+                            if (getattr(user, requirement)) != value:
                                 if user not in last_users:
                                     last_users.append(user)
                 print(len(last_users), 'len last') 

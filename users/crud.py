@@ -27,6 +27,9 @@ def filter_users(db: Session, requirement, operator, value):
     elif operator == '<=':
         print('operator is <=')
         return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) <= value).all()
+    elif operator == 'not':
+        print('operator is !=')
+        return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) != value).all()
     elif operator == 'contains':
         print('operator is contains')
         return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement).contains(value)).all()

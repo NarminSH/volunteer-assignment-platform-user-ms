@@ -41,6 +41,204 @@ def get_db():
 
 
 
+@app.get('/volunteer-fields')
+def read_fields():
+    field_names_obj = {
+    "candidate_id": [],
+    "residence_country": [], 
+    "nationality": ["AF", "AL", "DZ", "AS","AD", "AO", "AI", "AQ",
+    "AG", "AR",'AU' ,'AM' ,'AW' ,'AT' ,'AZ' ,'BS' ,'BH' ,'BD',  'BB', 'BY', 
+    'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BV', 'BR', 'IO', 
+    'BN', "BG", "BF", "BI", "CV", "KH", "CM", "CA", "KY", "CF", "TD", "CL", 
+    "CN", "CX", "CC", "CO", "KM", "CD", "CG", "CK", "CR", "HR", "CU", "CW", 
+    "CY", "CZ", "CI", "DK", "DJ", "DM", "DO", "EC", "EG", "SV", "GQ", "ER", 
+    "EE", "SZ", "ET", "FK", "FO", "FJ", "FI", "FR", "GF", "PF", "TF", "GA", 
+    "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", 
+    "GN", "GW", "GY", "HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", 
+    "IR", "IQ", "IE", "IM", "IL", "IT", "JM", "JP", "JE", "JO", "KZ", "KE", 
+    "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI", 
+    "LT", "LU", "MO", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", 
+    "MU", "YT", "MX", "FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", 
+    "NA", "NR", "NP", "NL", "NC", "NZ", "NI", "NE", "NG", "NU", "NF", "MP", 
+    "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", 
+    "PT", "PR", "QA", "MK", "RO", "RU", "RW", "RE", "BL", "SH", "KN", "LC", 
+    "MF", "PM", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", 
+    "SX", "SK", "SI", "SB", "SO", "ZA", "GS", "SS", "ES", "LK", "SD", "SR", 
+    "SJ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK", "TO", 
+    "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "UM", "US", 
+    "UY", "UZ", "VU", "VE", "VN", "VG", "VI", "WF", "EH", "YE", "ZM", "ZW", "AX"],
+    "gender": ["Male", "Female"],
+    "dob": [],
+    "delivery_score": [1,2,3,4,5]  ,
+    "current_occupation": ["Student", "Employed", "Unemployed", "Retired", "Other"],
+    "qatari_driving_lisence": ["Yes", "No", " "],
+    "driving_license_type": ["Car", "Motorcycle", "Minibus (up to 8 people)", "Bus (over 8 people)"],
+    "international_accommodation": ["Stay in a Hotel, Hostel or Apartment Rental", "Stay with friends or family"],
+    "medical_condition": [],
+    "disability": ["Yes", "No", "Prefer not to say"],
+    "disability_type": ["a wheelchair user", "a person with limited mobility (non-wheelchair user)", "blind/partially", 
+"deaf/hard of hearing", "a person with mental ill health", "other (if other, please specify)", "prefer not to say"],
+    "disability_others": [],
+    "social_worker": ["Yes", "No", "I don't need support"],
+    "dietary_requirement": ["Yes", "No"],
+    "special_dietary": ["Celery and products thereof", "Cereals containing gluten and products thereof", "Crustaceans and products thereof", 
+    "Eggs and products thereof", "Fish and products thereof", "Lupin and products thereof", "Milk and products thereof (including lactose)", 
+    "Molluscs and products thereof", "Mustard and products thereof",
+    "Nuts i.e. almond, hazelnuts, walnuts, cashews, pecan nuts, Brazil nuts, pistachio nuts, macadamia/ Queensland nuts and products thereof", 
+    "Peanuts and products thereof", "Sesame seeds and products thereof", "Soybeans and products thereof", 
+    "Sulphur dioxide and sulphites at concentrations of more than 10 mg/kg or 10 mg/litre", "Others"],
+    "alergies_other": [],
+    "covid_19_vaccinated": ["Yes", "No"],
+    "final_dose_date": [],
+    "education": ["Masters/post graduate degree", "Secondary/High School", "Undergraduate degree", "Doctorate", "Other", "Primary"],
+    "area_of_study": [],
+    "english_level": ["Strong", "Good", "Poor"],
+    "english_fluency_level": ["Native", "Fluent", "Intermediate", "Beginner", "I don't speak English"],
+    "arabic_fluency_level": ["Native", "Fluent", "Intermediate", "Beginner", "I don't speak Arabic"],
+    "additional_language_1": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"],
+    "additional_language_1_fluency_level": ["Intermediate", "Beginner"],
+    "additional_language_2": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"],
+    "additional_language_2_fluency_level": ["Intermediate", "Beginner"],
+    "additional_language_3": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"],
+    "additional_language_3_fluency_level": ["Intermediate", "Beginner"],
+    "additional_language_4": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"],
+    "additional_language_4_fluency_level": ["Intermediate", "Beginner"],
+    "other_languages": [],
+    "describe_your_it_skills" : ["Expert", "Advanced", "Intermediate", "Basic"],
+    "interpretation_experience": ["Yes (Non-certified)", "No", "Yes (Certified)"],
+    "interpretation_language": [],
+    "skill_1": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"],
+    "skill_2": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"],
+    "skill_3": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"],
+    "skill_4": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"],
+    "skill_5": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"],
+    "skill_6": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"],
+    "previous_volunteer": ["Yes", "No"],
+    "volunteer_experience": ["My first volunteering experience", "Customer services", "Supporting people with disabilities", 
+    "Supporting vulnerable people", "Transport", "Spectator services", "Fan Zones", "Hospitality", "Medical Services", 
+    "Supporting Youth Programmes", "Catering", "Operations or Logistics, Ticketing", 
+    "IT", "Administration", "Accreditation", "Broadcasting/TV operations", "Media", "Marketing", "Logistics", 
+    "Accommodation", "Protocol & guest management", "Team services", "Anti-doping", "Brand protection", "Match organisation", 
+    "Opening/closing ceremonies", "Safety & security", "Sustainability", "Technical services", 'Welcome ceremonies/award ceremonies', 'Other', 'Volunteer Management', 'Venue Management', "Refereeing"],
+    "other_volunteer_experience": [],
+    "participated_event_type": ["Community events", "Corporate events (conference, congress…)", 
+    "FIFA World Cup", "Music festival", "National/region sport competitions", "Summer Olympic Games / Paralympic Games", 
+    "Winter Olympic Games / Paralympic Games", "World championship/world cup", "World Expo", "Others", 
+    "Continental games", "Football continental competition", "Youth Olympic Games"],
+    "event_type_other": [],
+    'preferred_volunteer_role': ["I don't have a preference", "Access Management", "Accessibility", "Accreditation",
+     "Arrivals and Departures", "Catering", "Ceremonies", "Communications", "Competition Management",
+    "Event Promotion", "Fan Zones", "FIFA Fan Fests", "Guest Management and Protocol", "Health & Safety", 
+    "Hospitality", "IT", "Language Services", "Last Mile", "Legal (Brand Protection)", "Marketing", 
+    "Media Operations", "Medical Services & Doping Control", "Protocol & Guest Management", "Security", 
+    "Spectator Services", "Sustainability", "Team and Referee Services", "Workforce Management", "Ticketing", 
+    "Transport", "Venue Management", "Workers Welfare", "Corniche Activation", "Fan ID Project", 
+    "Broadcasting / TV Operations", "Logistics", "Youth Programme"],
+    'are_you_interested_in_a_leadership_role': ["Yes", "No", " "],
+    'leadership_experience': [],
+    'relevant_experience': [],
+    'ceremonies_yes_no': ["Yes", "No"],
+    'cast_yes_no' : ["Yes", "No", " "],
+    'cast_options': ["Event production", "Hair & Makeup", "Costumes / Fashion", 
+    "Scenic / Stage management", "Props", "Audio equipment"],
+    'why_interested_in_fifa': ["I have experience in volunteering/enjoy volunteering", "I want to visit Qatar", 
+    "I want to give back to Qatar", "I love/am passionate about football", "I want to meet new people", 
+    "I want to learn new skills", "I want to be part of one of the biggest sporting events"],
+    'rearrange_schedule': ["Yes", "No"],
+    'international_volunteer': ["Local", "International"],
+    'collaboration_score' : [1,2,3,4,5],
+    'motivation_score' : [1,2,3,4,5],
+    'fwc_availability_pre_tournament_one': ["Yes", "No", " "],
+    'fwc_availability_pre_tournament_two': ["Yes", "No", " "],
+    'availability_during_tournament': ["Yes", "No", " "],
+    'daily_availability_shift_morning': ["Yes", "No", " "],
+    'daily_availability_shift_afternoon': ["Yes", "No", " "],
+    'daily_availability_shift_evening': ["Yes", "No", " "],
+    'daily_availability_shift_overnight': ["Yes", "No", " "],
+    'under_18': ["Yes", "No", " "],
+    'special_group': ["Kuwait", "Oman", "Qatar", "Saudi Arabia"],
+    'municipality_address' : ["Doha", "Al Daayen", "Al Khor", "Al Wakrah", "Al Rayyan", "Al Shahaniya", "Umm Salal", "Al Shamal"],
+    'previous_role_offer': [],
+    'pioneer': ["Yes", "No", " "],
+    'checkpoint': ["4.1.1 Interview Passed [Local - English]", "4.2.1 Interview Passed [International - English]"],
+    'reasonable_adjustments': [],
+    'event_experience': [],
+    'passion_score': [1,2,3,4,5, " "],
+    'commitment_score': [1,2,3,4,5, " "],
+    'team_leader_experience': ["Work", "University", "Volunteering", "Sport Events", None],
+    'team_leader_qualities': ["Communication", "Team Work", "Positivity", "Diplomatic", 
+    "Support", "Motivation", "Punctual", "Trustworthy", "Responsible", "Active Listening"],
+
+    'team_leader_recommendation': ["Yes", "Maybe", "No", " "],
+
+    'availability': ["Understands need to plan schedule", "Already planned leave", 
+    "Requires release letter from employer", "States will attend shift after work", 
+    "Does not appear to understand shift requirement/commitment"],
+    'experience_recommendation': ["N/A", "Access Management", "Accessibility", 
+    "Accreditation", "Arrivals and Departures", "Catering", "Cleaning & Waste", 
+    "Communications", "Competition Management", "Event Promotion", "Event Transport", 
+    "Fan Zones", "Guest Operations", "Health & Safety", "Hospitality", "IT", "Language Services",
+    "Legal", "Marketing Rights Delivery", "Media Operations", "Medical Services & Doping Control", 
+    "Referee Services", "Q22 Visitor Experience", "Referee Services", "Signage", "Spectator Services", 
+    "Sustainability", "Team Services", "Ticketing", "TV Operations", "Venue Management", "Workforce Management", 
+    "Last Mile", "Marketing", "Security", "Testing & Ticketing Support"],
+    'soft_skills': ["Adaptability", "Attention to detail", "Communication & Interpersonal", "Creativity", 
+    "Customer Service", "Decision Making", "Empathy", "Multitasking", "Positive Attitude", "Self-Motivated", 
+    "Time Management", "Patience", "Work ethic", "Conflict Resolution", None],
+
+    'technical_skills': ["HR / Interview", "IT (Systems & Software Proficiency)", "Editorial (Typing & Writing)", 
+    "Problem-solving (Critical Thinking)", "Trouble Shooting", "Event management", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation & planning", 
+    "Project management", "Public speaking", "Time management", "Teamwork", "Reporting", "Research", 
+    "Volunteer management", None],
+    'recommend_as_volunteer': ["Yes", "No"],
+    'rejection_justification': ["Attitude", "Poor Communication", "No motivation shown", 
+    "Interest in watching matches only", "Inappropriate comments", "Lack of commitment", 
+    "No understanding of volunteering role and responsibilities", "Unable to respond to Questions", "Poor availability"],
+    'interview_notes': [],
+    'why_rejected_candidate': [],
+    'role_offer_id' : [],
+    'status': ["Assigned", "Pending", "Accepted", "Confirmed", "Complete", 
+    "Declined", "Removed", "Expired", "Waitlist Offered", "Waitlist Accepted", 
+    "Waitlist Declined", "Pre-assigned", "Not Approved", "Waitlist Assigned"]
+    }
+    return field_names_obj
+
+
+
+
 @app.get('/volunteers')
 def read_volunteers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = get_users(db, skip=skip, limit=limit)
@@ -206,19 +404,12 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     
 
 
-@app.get('/volunteer-fields')
-def read_fields():
-    columns = [column.name for column in inspect(models.Volunteers).c]
-    return columns
-
-
-
 
 @app.post('/import-users-data')
 def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), db: Session = Depends(get_db)):
- 
     background_task.add_task(check_role, db=db, background_task=background_task)
-    
+    file_name = file.filename
+    print(file_name)
 
     all_users_in_excel = []
     with open(f'{file.filename}', "wb") as buffer:
@@ -226,7 +417,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
 
     print("got1 here")
     print(datetime.now())
-    data = pd.read_excel("assignment-data.xlsx", index_col=None)
+    data = pd.read_excel(file_name, index_col=None)
     volunteer_data = data.astype(object).replace(np.nan, None)
 
     print("got2 here")
@@ -350,6 +541,12 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "created_at": datetime.now()
                 }
                 saved_users.append(new_user)
+                if len(saved_users) == 100:
+                    print(datetime.now(), "saving 100 user")
+                    db.bulk_insert_mappings(models.Volunteers, saved_users)
+                    print(datetime.now(), 'before committing 100 user')
+                    db.commit()
+                    print(datetime.now(), 'finished saving 100 user')
             else:
                 update_user = {
                 "candidate_id": candidate_id,
@@ -444,12 +641,12 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "updated_at": datetime.now()
                 }
                 updated_users.append(update_user)
-        if saved_users != []:
-            print(datetime.now(), "saving")
-            db.bulk_insert_mappings(models.Volunteers, saved_users)
-            print(datetime.now())
-            db.commit()
-            print(datetime.now())
+        # if saved_users != []:
+        #     print(datetime.now(), "saving")
+        #     db.bulk_insert_mappings(models.Volunteers, saved_users)
+        #     print(datetime.now())
+        #     db.commit()
+        #     print(datetime.now())
         if updated_users != []:
             print("updated users")
             print(datetime.now())
@@ -573,6 +770,8 @@ def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
         db.commit()
         print('committed updated users in check-role')
 
+    print('checked all roles, users who have changes', len(updated_users))
+
 
 
 @app.get('/user-history/{candidate_id}')
@@ -583,5 +782,5 @@ def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
 
 
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="localhost", port=8001)
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8001)

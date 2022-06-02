@@ -46,461 +46,572 @@ def read_fields():
     return columns
 
 
-# @app.get('/volunteer')
-# def read_fields():
-#     field_names_obj = {
-#     "candidate_id": {
-#         "type": "input/select",
-#         "field_type": "int/string/date",
-#         "value": []
-#         },
-#         # {
-#         #     "type": "select",
-#         #     "value_type": "string",
-#         #     "value": []
-#         # },
-#     "residence_country": [], 
-#     "nationality": ["AF", "AL", "DZ", "AS","AD", "AO", "AI", "AQ",
-#     "AG", "AR",'AU' ,'AM' ,'AW' ,'AT' ,'AZ' ,'BS' ,'BH' ,'BD',  'BB', 'BY', 
-#     'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BV', 'BR', 'IO', 
-#     'BN', "BG", "BF", "BI", "CV", "KH", "CM", "CA", "KY", "CF", "TD", "CL", 
-#     "CN", "CX", "CC", "CO", "KM", "CD", "CG", "CK", "CR", "HR", "CU", "CW", 
-#     "CY", "CZ", "CI", "DK", "DJ", "DM", "DO", "EC", "EG", "SV", "GQ", "ER", 
-#     "EE", "SZ", "ET", "FK", "FO", "FJ", "FI", "FR", "GF", "PF", "TF", "GA", 
-#     "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", 
-#     "GN", "GW", "GY", "HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", 
-#     "IR", "IQ", "IE", "IM", "IL", "IT", "JM", "JP", "JE", "JO", "KZ", "KE", 
-#     "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI", 
-#     "LT", "LU", "MO", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", 
-#     "MU", "YT", "MX", "FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", 
-#     "NA", "NR", "NP", "NL", "NC", "NZ", "NI", "NE", "NG", "NU", "NF", "MP", 
-#     "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", 
-#     "PT", "PR", "QA", "MK", "RO", "RU", "RW", "RE", "BL", "SH", "KN", "LC", 
-#     "MF", "PM", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", 
-#     "SX", "SK", "SI", "SB", "SO", "ZA", "GS", "SS", "ES", "LK", "SD", "SR", 
-#     "SJ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK", "TO", 
-#     "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "UM", "US", 
-#     "UY", "UZ", "VU", "VE", "VN", "VG", "VI", "WF", "EH", "YE", "ZM", "ZW", "AX"],
-#     "gender": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": ["Male", "Female"]
-#         },
-#     "dob": [],
-#     "delivery_score": [1,2,3,4,5]  ,
-#     "current_occupation": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Student", "Employed", "Unemployed", "Retired", "Other"],
-#     "qatari_driving_lisence": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     "driving_license_type": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Car", "Motorcycle", "Minibus (up to 8 people)", "Bus (over 8 people)"],
-#     "international_accommodation": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Stay in a Hotel, Hostel or Apartment Rental", "Stay with friends or family"],
-#     "medical_condition": [],
-#     "disability": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", "Prefer not to say"],
-#     "disability_type": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["a wheelchair user", "a person with limited mobility (non-wheelchair user)", "blind/partially", 
-# "deaf/hard of hearing", "a person with mental ill health", "other (if other, please specify)", "prefer not to say"],
-#     "disability_others": [],
-#     "social_worker": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", "I don't need support"],
-#     "dietary_requirement": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No"],
-#     "special_dietary": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Celery and products thereof", "Cereals containing gluten and products thereof", "Crustaceans and products thereof", 
-#     "Eggs and products thereof", "Fish and products thereof", "Lupin and products thereof", "Milk and products thereof (including lactose)", 
-#     "Molluscs and products thereof", "Mustard and products thereof",
-#     "Nuts i.e. almond, hazelnuts, walnuts, cashews, pecan nuts, Brazil nuts, pistachio nuts, macadamia/ Queensland nuts and products thereof", 
-#     "Peanuts and products thereof", "Sesame seeds and products thereof", "Soybeans and products thereof", 
-#     "Sulphur dioxide and sulphites at concentrations of more than 10 mg/kg or 10 mg/litre", "Others"],
-#     "alergies_other": [],
-#     "covid_19_vaccinated": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No"],
-#     "final_dose_date": [],
-#     "education": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Masters/post graduate degree", "Secondary/High School", "Undergraduate degree", "Doctorate", "Other", "Primary"],
-#     "area_of_study": [],
-#     "english_level": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Strong", "Good", "Poor"],
-#     "english_fluency_level": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Native", "Fluent", "Intermediate", "Beginner", "I don't speak English"],
-#     "arabic_fluency_level": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Native", "Fluent", "Intermediate", "Beginner", "I don't speak Arabic"],
-#     "additional_language_1": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
-#     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
-#     "Swedish", "Other (Please specify in the text box below)"],
-#     "additional_language_1_fluency_level": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Intermediate", "Beginner"],
-#     "additional_language_2": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
-#     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
-#     "Swedish", "Other (Please specify in the text box below)"],
-#     "additional_language_2_fluency_level": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Intermediate", "Beginner"],
-#     "additional_language_3": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
-#     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
-#     "Swedish", "Other (Please specify in the text box below)"],
-#     "additional_language_3_fluency_level": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Intermediate", "Beginner"],
-#     "additional_language_4":{
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         } ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
-#     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
-#     "Swedish", "Other (Please specify in the text box below)"],
-#     "additional_language_4_fluency_level": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Intermediate", "Beginner"],
-#     "other_languages": [],
-#     "describe_your_it_skills" : {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Expert", "Advanced", "Intermediate", "Basic"],
-#     "interpretation_experience": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes (Non-certified)", "No", "Yes (Certified)"],
-#     "interpretation_language": [],
-#     "skill_1": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
-#     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
-#     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
-#     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
-#     "Teamwork", "Time management", "Volunteer management", "Human Rights"],
-#     "skill_2": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
-#     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
-#     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
-#     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
-#     "Teamwork", "Time management", "Volunteer management", "Human Rights"],
-#     "skill_3": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
-#     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
-#     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
-#     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
-#     "Teamwork", "Time management", "Volunteer management", "Human Rights"],
-#     "skill_4": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
-#     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
-#     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
-#     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
-#     "Teamwork", "Time management", "Volunteer management", "Human Rights"],
-#     "skill_5": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
-#     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
-#     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
-#     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
-#     "Teamwork", "Time management", "Volunteer management", "Human Rights"],
-#     "skill_6": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
-#     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
-#     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
-#     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
-#     "Teamwork", "Time management", "Volunteer management", "Human Rights"],
-#     "previous_volunteer": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No"],
-#     "volunteer_experience": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["My first volunteering experience", "Customer services", "Supporting people with disabilities", 
-#     "Supporting vulnerable people", "Transport", "Spectator services", "Fan Zones", "Hospitality", "Medical Services", 
-#     "Supporting Youth Programmes", "Catering", "Operations or Logistics, Ticketing", 
-#     "IT", "Administration", "Accreditation", "Broadcasting/TV operations", "Media", "Marketing", "Logistics", 
-#     "Accommodation", "Protocol & guest management", "Team services", "Anti-doping", "Brand protection", "Match organisation", 
-#     "Opening/closing ceremonies", "Safety & security", "Sustainability", "Technical services", 'Welcome ceremonies/award ceremonies', 'Other', 'Volunteer Management', 'Venue Management', "Refereeing"],
-#     "other_volunteer_experience": [],
-#     "participated_event_type": {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Community events", "Corporate events (conference, congress…)", 
-#     "FIFA World Cup", "Music festival", "National/region sport competitions", "Summer Olympic Games / Paralympic Games", 
-#     "Winter Olympic Games / Paralympic Games", "World championship/world cup", "World Expo", "Others", 
-#     "Continental games", "Football continental competition", "Youth Olympic Games"],
-#     "event_type_other": [],
-#     'preferred_volunteer_role': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["I don't have a preference", "Access Management", "Accessibility", "Accreditation",
-#      "Arrivals and Departures", "Catering", "Ceremonies", "Communications", "Competition Management",
-#     "Event Promotion", "Fan Zones", "FIFA Fan Fests", "Guest Management and Protocol", "Health & Safety", 
-#     "Hospitality", "IT", "Language Services", "Last Mile", "Legal (Brand Protection)", "Marketing", 
-#     "Media Operations", "Medical Services & Doping Control", "Protocol & Guest Management", "Security", 
-#     "Spectator Services", "Sustainability", "Team and Referee Services", "Workforce Management", "Ticketing", 
-#     "Transport", "Venue Management", "Workers Welfare", "Corniche Activation", "Fan ID Project", 
-#     "Broadcasting / TV Operations", "Logistics", "Youth Programme"],
-#     'are_you_interested_in_a_leadership_role': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'leadership_experience': [],
-#     'relevant_experience': [],
-#     'ceremonies_yes_no': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No"],
-#     'cast_yes_no' : {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'cast_options': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Event production", "Hair & Makeup", "Costumes / Fashion", 
-#     "Scenic / Stage management", "Props", "Audio equipment"],
-#     'why_interested_in_fifa': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["I have experience in volunteering/enjoy volunteering", "I want to visit Qatar", 
-#     "I want to give back to Qatar", "I love/am passionate about football", "I want to meet new people", 
-#     "I want to learn new skills", "I want to be part of one of the biggest sporting events"],
-#     'rearrange_schedule': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No"],
-#     'international_volunteer': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Local", "International"],
-#     'collaboration_score' : [1,2,3,4,5],
-#     'motivation_score' : [1,2,3,4,5],
-#     'fwc_availability_pre_tournament_one': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'fwc_availability_pre_tournament_two': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'availability_during_tournament': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'daily_availability_shift_morning': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'daily_availability_shift_afternoon': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'daily_availability_shift_evening': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'daily_availability_shift_overnight': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'under_18': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'special_group': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Kuwait", "Oman", "Qatar", "Saudi Arabia"],
-#     'municipality_address' : {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Doha", "Al Daayen", "Al Khor", "Al Wakrah", "Al Rayyan", "Al Shahaniya", "Umm Salal", "Al Shamal"],
-#     'previous_role_offer': [],
-#     'pioneer': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No", " "],
-#     'checkpoint': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["4.1.1 Interview Passed [Local - English]", "4.2.1 Interview Passed [International - English]"],
-#     'reasonable_adjustments': [],
-#     'event_experience': [],
-#     'passion_score': [1,2,3,4,5, " "],
-#     'commitment_score': [1,2,3,4,5, " "],
-#     'team_leader_experience': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Work", "University", "Volunteering", "Sport Events", None],
-#     'team_leader_qualities': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Communication", "Team Work", "Positivity", "Diplomatic", 
-#     "Support", "Motivation", "Punctual", "Trustworthy", "Responsible", "Active Listening"],
+@app.get('/volunteer-fields-new')
+def read_fields():
+    field_names_obj = {
+    "candidate_id": {
+        "type": "input",
+        "field_type": "int",
+        "value": []
+        },
+    "residence_country": {
+        "type": "select",
+        "field_type": "string",
+        "value": ["AF", "AL", "DZ", "AS","AD", "AO", "AI", "AQ",
+    "AG", "AR",'AU' ,'AM' ,'AW' ,'AT' ,'AZ' ,'BS' ,'BH' ,'BD',  'BB', 'BY', 
+    'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BV', 'BR', 'IO', 
+    'BN', "BG", "BF", "BI", "CV", "KH", "CM", "CA", "KY", "CF", "TD", "CL", 
+    "CN", "CX", "CC", "CO", "KM", "CD", "CG", "CK", "CR", "HR", "CU", "CW", 
+    "CY", "CZ", "CI", "DK", "DJ", "DM", "DO", "EC", "EG", "SV", "GQ", "ER", 
+    "EE", "SZ", "ET", "FK", "FO", "FJ", "FI", "FR", "GF", "PF", "TF", "GA", 
+    "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", 
+    "GN", "GW", "GY", "HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", 
+    "IR", "IQ", "IE", "IM", "IL", "IT", "JM", "JP", "JE", "JO", "KZ", "KE", 
+    "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI", 
+    "LT", "LU", "MO", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", 
+    "MU", "YT", "MX", "FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", 
+    "NA", "NR", "NP", "NL", "NC", "NZ", "NI", "NE", "NG", "NU", "NF", "MP", 
+    "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", 
+    "PT", "PR", "QA", "MK", "RO", "RU", "RW", "RE", "BL", "SH", "KN", "LC", 
+    "MF", "PM", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", 
+    "SX", "SK", "SI", "SB", "SO", "ZA", "GS", "SS", "ES", "LK", "SD", "SR", 
+    "SJ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK", "TO", 
+    "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "UM", "US", 
+    "UY", "UZ", "VU", "VE", "VN", "VG", "VI", "WF", "EH", "YE", "ZM", "ZW", "AX"] }, 
+    "nationality": {
+        "type": "select",
+        "field_type": "string",
+        "value": ["AF", "AL", "DZ", "AS","AD", "AO", "AI", "AQ",
+    "AG", "AR",'AU' ,'AM' ,'AW' ,'AT' ,'AZ' ,'BS' ,'BH' ,'BD',  'BB', 'BY', 
+    'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BV', 'BR', 'IO', 
+    'BN', "BG", "BF", "BI", "CV", "KH", "CM", "CA", "KY", "CF", "TD", "CL", 
+    "CN", "CX", "CC", "CO", "KM", "CD", "CG", "CK", "CR", "HR", "CU", "CW", 
+    "CY", "CZ", "CI", "DK", "DJ", "DM", "DO", "EC", "EG", "SV", "GQ", "ER", 
+    "EE", "SZ", "ET", "FK", "FO", "FJ", "FI", "FR", "GF", "PF", "TF", "GA", 
+    "GM", "GE", "DE", "GH", "GI", "GR", "GL", "GD", "GP", "GU", "GT", "GG", 
+    "GN", "GW", "GY", "HT", "HM", "VA", "HN", "HK", "HU", "IS", "IN", "ID", 
+    "IR", "IQ", "IE", "IM", "IL", "IT", "JM", "JP", "JE", "JO", "KZ", "KE", 
+    "KI", "KP", "KR", "KW", "KG", "LA", "LV", "LB", "LS", "LR", "LY", "LI", 
+    "LT", "LU", "MO", "MG", "MW", "MY", "MV", "ML", "MT", "MH", "MQ", "MR", 
+    "MU", "YT", "MX", "FM", "MD", "MC", "MN", "ME", "MS", "MA", "MZ", "MM", 
+    "NA", "NR", "NP", "NL", "NC", "NZ", "NI", "NE", "NG", "NU", "NF", "MP", 
+    "NO", "OM", "PK", "PW", "PS", "PA", "PG", "PY", "PE", "PH", "PN", "PL", 
+    "PT", "PR", "QA", "MK", "RO", "RU", "RW", "RE", "BL", "SH", "KN", "LC", 
+    "MF", "PM", "VC", "WS", "SM", "ST", "SA", "SN", "RS", "SC", "SL", "SG", 
+    "SX", "SK", "SI", "SB", "SO", "ZA", "GS", "SS", "ES", "LK", "SD", "SR", 
+    "SJ", "SE", "CH", "SY", "TW", "TJ", "TZ", "TH", "TL", "TG", "TK", "TO", 
+    "TT", "TN", "TR", "TM", "TC", "TV", "UG", "UA", "AE", "GB", "UM", "US", 
+    "UY", "UZ", "VU", "VE", "VN", "VG", "VI", "WF", "EH", "YE", "ZM", "ZW", "AX"]
+        },
+    "gender": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Male", "Female"]
+        },
+    "dob": {
+            "type": "input",
+            "value_type": "date",
+            "value": []
+        },
+    "delivery_score": {
+            "type": "select",
+            "value_type": "int",
+            "value": [1,2,3,4,5]
+        },
+    "current_occupation": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Student", "Employed", "Unemployed", "Retired", "Other"]
+        },
+    "qatari_driving_lisence": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No", " "]
+        },
+    "driving_license_type": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Car", "Motorcycle", "Minibus (up to 8 people)", "Bus (over 8 people)"]
+        },
+    "international_accommodation": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Stay in a Hotel, Hostel or Apartment Rental", "Stay with friends or family"]
+        },
+    "medical_condition": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    "disability": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No", "Prefer not to say"]
+        },
+    "disability_type": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["a wheelchair user", "a person with limited mobility (non-wheelchair user)", "blind/partially", 
+"deaf/hard of hearing", "a person with mental ill health", "other (if other, please specify)", "prefer not to say"]
+        },
+    "disability_others": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    "social_worker": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No", "I don't need support"]
+        },
+    "dietary_requirement": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    "special_dietary": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Celery and products thereof", "Cereals containing gluten and products thereof", "Crustaceans and products thereof", 
+    "Eggs and products thereof", "Fish and products thereof", "Lupin and products thereof", "Milk and products thereof (including lactose)", 
+    "Molluscs and products thereof", "Mustard and products thereof",
+    "Nuts i.e. almond, hazelnuts, walnuts, cashews, pecan nuts, Brazil nuts, pistachio nuts, macadamia/ Queensland nuts and products thereof", 
+    "Peanuts and products thereof", "Sesame seeds and products thereof", "Soybeans and products thereof", 
+    "Sulphur dioxide and sulphites at concentrations of more than 10 mg/kg or 10 mg/litre", "Others"]
+        },
+    "alergies_other": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    "covid_19_vaccinated": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    "final_dose_date": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    "education": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Masters/post graduate degree", "Secondary/High School", "Undergraduate degree", "Doctorate", "Other", "Primary"]
+        },
+    "area_of_study": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    "english_level": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Strong", "Good", "Poor"]
+        },
+    "english_fluency_level": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Native", "Fluent", "Intermediate", "Beginner", "I don't speak English"]
+        },
+    "arabic_fluency_level": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Native", "Fluent", "Intermediate", "Beginner", "I don't speak Arabic"]
+        },
+    "additional_language_1": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"]
+        },
+    "additional_language_1_fluency_level": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Intermediate", "Beginner"]
+        },
+    "additional_language_2": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"]
+        },
+    "additional_language_2_fluency_level": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Intermediate", "Beginner"]
+        },
+    "additional_language_3": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"]
+        },
+    "additional_language_3_fluency_level": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Intermediate", "Beginner"]
+        },
+    "additional_language_4":{
+            "type": "select",
+            "value_type": "string",
+            "value": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"]
+        },
+    "additional_language_4_fluency_level": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Intermediate", "Beginner"]
+        },
+    "other_languages": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    "describe_your_it_skills" : {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Expert", "Advanced", "Intermediate", "Basic"]
+        },
+    "interpretation_experience": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes (Non-certified)", "No", "Yes (Certified)"]
+        },
+    "interpretation_language": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    "skill_1": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"]
+        },
+    "skill_2": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"]
+        },
+    "skill_3": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"]
+        },
+    "skill_4": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"]
+        },
+    "skill_5": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"]
+        },
+    "skill_6": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"]
+        },
+    "previous_volunteer": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    "volunteer_experience": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["My first volunteering experience", "Customer services", "Supporting people with disabilities", 
+    "Supporting vulnerable people", "Transport", "Spectator services", "Fan Zones", "Hospitality", "Medical Services", 
+    "Supporting Youth Programmes", "Catering", "Operations or Logistics, Ticketing", 
+    "IT", "Administration", "Accreditation", "Broadcasting/TV operations", "Media", "Marketing", "Logistics", 
+    "Accommodation", "Protocol & guest management", "Team services", "Anti-doping", "Brand protection", "Match organisation", 
+    "Opening/closing ceremonies", "Safety & security", "Sustainability", "Technical services", 'Welcome ceremonies/award ceremonies', 
+    'Other', 'Volunteer Management', 'Venue Management', "Refereeing"]
+        },
+    "other_volunteer_experience": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    "participated_event_type": {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Community events", "Corporate events (conference, congress…)", 
+    "FIFA World Cup", "Music festival", "National/region sport competitions", "Summer Olympic Games / Paralympic Games", 
+    "Winter Olympic Games / Paralympic Games", "World championship/world cup", "World Expo", "Others", 
+    "Continental games", "Football continental competition", "Youth Olympic Games"]
+        },
+    "event_type_other": {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    'preferred_volunteer_role': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["I don't have a preference", "Access Management", "Accessibility", "Accreditation",
+     "Arrivals and Departures", "Catering", "Ceremonies", "Communications", "Competition Management",
+    "Event Promotion", "Fan Zones", "FIFA Fan Fests", "Guest Management and Protocol", "Health & Safety", 
+    "Hospitality", "IT", "Language Services", "Last Mile", "Legal (Brand Protection)", "Marketing", 
+    "Media Operations", "Medical Services & Doping Control", "Protocol & Guest Management", "Security", 
+    "Spectator Services", "Sustainability", "Team and Referee Services", "Workforce Management", "Ticketing", 
+    "Transport", "Venue Management", "Workers Welfare", "Corniche Activation", "Fan ID Project", 
+    "Broadcasting / TV Operations", "Logistics", "Youth Programme"]
+        },
+    'are_you_interested_in_a_leadership_role': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No", " "]
+        },
+    'leadership_experience': {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    'relevant_experience': {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    'ceremonies_yes_no': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'cast_yes_no' : {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No", " "]
+        },
+    'cast_options': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Event production", "Hair & Makeup", "Costumes / Fashion", 
+    "Scenic / Stage management", "Props", "Audio equipment"]
+        },
+    'why_interested_in_fifa': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["I have experience in volunteering/enjoy volunteering", "I want to visit Qatar", 
+    "I want to give back to Qatar", "I love/am passionate about football", "I want to meet new people", 
+    "I want to learn new skills", "I want to be part of one of the biggest sporting events"]
+        },
+    'rearrange_schedule': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'international_volunteer': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Local", "International"]
+        },
+    'collaboration_score' : {
+            "type": "select",
+            "value_type": "int",
+            "value": [1,2,3,4,5]
+        },
+    'motivation_score' : {
+            "type": "select",
+            "value_type": "int",
+            "value": [1,2,3,4,5]
+        },
+    'fwc_availability_pre_tournament_one': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'fwc_availability_pre_tournament_two': {
+            "type": "select",
+            "value_type": "string",
+            "value":["Yes", "No"]
+        },
+    'availability_during_tournament': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'daily_availability_shift_morning': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'daily_availability_shift_afternoon': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'daily_availability_shift_evening': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'daily_availability_shift_overnight': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'under_18': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'special_group': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Kuwait", "Oman", "Qatar", "Saudi Arabia"]
+        },
+    'municipality_address' : {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Doha", "Al Daayen", "Al Khor", "Al Wakrah", "Al Rayyan", "Al Shahaniya", "Umm Salal", "Al Shamal"]
+        },
+    'previous_role_offer': [],
+    'pioneer': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'checkpoint': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["4.1.1 Interview Passed [Local - English]", "4.2.1 Interview Passed [International - English]"]
+        },
+    'reasonable_adjustments': {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    'event_experience': {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    'passion_score': {
+            "type": "select",
+            "value_type": "int",
+            "value": [1,2,3,4,5]
+        },
+    'commitment_score': {
+            "type": "select",
+            "value_type": "int",
+            "value": [1,2,3,4,5]
+        },
+    'team_leader_experience': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Work", "University", "Volunteering", "Sport Events", None]
+        },
+    'team_leader_qualities': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Communication", "Team Work", "Positivity", "Diplomatic", 
+    "Support", "Motivation", "Punctual", "Trustworthy", "Responsible", "Active Listening"]
+        },
 
-#     'team_leader_recommendation': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "Maybe", "No", " "],
+    'team_leader_recommendation': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "Maybe", "No"]
+        },
 
-#     'availability': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Understands need to plan schedule", "Already planned leave", 
-#     "Requires release letter from employer", "States will attend shift after work", 
-#     "Does not appear to understand shift requirement/commitment"],
-#     'experience_recommendation': ["N/A", "Access Management", "Accessibility", 
-#     "Accreditation", "Arrivals and Departures", "Catering", "Cleaning & Waste", 
-#     "Communications", "Competition Management", "Event Promotion", "Event Transport", 
-#     "Fan Zones", "Guest Operations", "Health & Safety", "Hospitality", "IT", "Language Services",
-#     "Legal", "Marketing Rights Delivery", "Media Operations", "Medical Services & Doping Control", 
-#     "Referee Services", "Q22 Visitor Experience", "Referee Services", "Signage", "Spectator Services", 
-#     "Sustainability", "Team Services", "Ticketing", "TV Operations", "Venue Management", "Workforce Management", 
-#     "Last Mile", "Marketing", "Security", "Testing & Ticketing Support"],
-#     'soft_skills': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Adaptability", "Attention to detail", "Communication & Interpersonal", "Creativity", 
-#     "Customer Service", "Decision Making", "Empathy", "Multitasking", "Positive Attitude", "Self-Motivated", 
-#     "Time Management", "Patience", "Work ethic", "Conflict Resolution", None],
+    'availability': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Understands need to plan schedule", "Already planned leave", 
+    "Requires release letter from employer", "States will attend shift after work", 
+    "Does not appear to understand shift requirement/commitment"],
+    'experience_recommendation': ["N/A", "Access Management", "Accessibility", 
+    "Accreditation", "Arrivals and Departures", "Catering", "Cleaning & Waste", 
+    "Communications", "Competition Management", "Event Promotion", "Event Transport", 
+    "Fan Zones", "Guest Operations", "Health & Safety", "Hospitality", "IT", "Language Services",
+    "Legal", "Marketing Rights Delivery", "Media Operations", "Medical Services & Doping Control", 
+    "Referee Services", "Q22 Visitor Experience", "Referee Services", "Signage", "Spectator Services", 
+    "Sustainability", "Team Services", "Ticketing", "TV Operations", "Venue Management", "Workforce Management", 
+    "Last Mile", "Marketing", "Security", "Testing & Ticketing Support"]
+        },
+    'soft_skills': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Adaptability", "Attention to detail", "Communication & Interpersonal", "Creativity", 
+    "Customer Service", "Decision Making", "Empathy", "Multitasking", "Positive Attitude", "Self-Motivated", 
+    "Time Management", "Patience", "Work ethic", "Conflict Resolution", None]
+        },
 
-#     'technical_skills': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["HR / Interview", "IT (Systems & Software Proficiency)", "Editorial (Typing & Writing)", 
-#     "Problem-solving (Critical Thinking)", "Trouble Shooting", "Event management", "Leadership skills", 
-#     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation & planning", 
-#     "Project management", "Public speaking", "Time management", "Teamwork", "Reporting", "Research", 
-#     "Volunteer management", None],
-#     'recommend_as_volunteer': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Yes", "No"],
-#     'rejection_justification': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Attitude", "Poor Communication", "No motivation shown", 
-#     "Interest in watching matches only", "Inappropriate comments", "Lack of commitment", 
-#     "No understanding of volunteering role and responsibilities", "Unable to respond to Questions", "Poor availability"],
-#     'interview_notes': [],
-#     'why_rejected_candidate': [],
-#     'role_offer_id' : [],
-#     'status': {
-#             "type": "select",
-#             "value_type": "string",
-#             "value": []
-#         }["Assigned", "Pending", "Accepted", "Confirmed", "Complete", 
-#     "Declined", "Removed", "Expired", "Waitlist Offered", "Waitlist Accepted", 
-#     "Waitlist Declined", "Pre-assigned", "Not Approved", "Waitlist Assigned"]
-#     }
-#     return field_names_obj
+    'technical_skills': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["HR / Interview", "IT (Systems & Software Proficiency)", "Editorial (Typing & Writing)", 
+    "Problem-solving (Critical Thinking)", "Trouble Shooting", "Event management", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation & planning", 
+    "Project management", "Public speaking", "Time management", "Teamwork", "Reporting", "Research", 
+    "Volunteer management", None]
+        },
+    'recommend_as_volunteer': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Yes", "No"]
+        },
+    'rejection_justification': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Attitude", "Poor Communication", "No motivation shown", 
+    "Interest in watching matches only", "Inappropriate comments", "Lack of commitment", 
+    "No understanding of volunteering role and responsibilities", "Unable to respond to Questions", "Poor availability"]
+        },
+    'interview_notes': {
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    'why_rejected_candidate':{
+            "type": "input",
+            "value_type": "string",
+            "value": []
+        },
+    'role_offer_id' : {
+            "type": "input",
+            "value_type": "int",
+            "value": []
+        },
+    'status': {
+            "type": "select",
+            "value_type": "string",
+            "value": ["Assigned", "Pending", "Accepted", "Confirmed", "Complete", 
+            "Declined", "Removed", "Expired", "Waitlist Offered", "Waitlist Accepted", 
+            "Waitlist Declined", "Pre-assigned", "Not Approved", "Waitlist Assigned"]
+        }
+    }
+    return field_names_obj
 
 
 

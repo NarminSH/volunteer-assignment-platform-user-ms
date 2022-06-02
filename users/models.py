@@ -4,28 +4,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text
 from users.database import Base
 
 
-# class StatusEnum(enum.Enum):
-#     Assigned = "Assigned"
-#     Pending = "Waitlisted"
-#     Accepted = "Accepted"
-#     Confirmed = "Confirmed"
-#     Complete = "Complete"
-#     Declined = "Declined"
-#     Removed = "Removed"
-#     Expired = "Expired"
-#     Waitlist_offered = "Waitlist Offered"
-#     Waitlist_accepted = "Waitlist Accepted"
-#     Waitlist_declined = "Waitlist Declined"
-#     Pre_assigned = "Pre-assigned"
-#     Not_approved = "Not Approved"
-#     Waitlist_assigned = "Waitlist Assigned"
-
-
-#     class __metaclass__(type):
-#         def __getattr__(self, name):
-#             if name in self.values:
-#                 return 'here'
-
 
 #max character 4500 char
 class Volunteers(Base):
@@ -36,6 +14,7 @@ class Volunteers(Base):
     nationality = Column(String)
     gender = Column(String)
     dob = Column(String)
+    age = Column(Integer)
     delivery_score = Column(Integer) 
     current_occupation = Column(String)
     qatari_driving_lisence = Column(String)

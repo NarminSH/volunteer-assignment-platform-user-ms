@@ -52,12 +52,12 @@ def read_fields():
     "candidate_id": {
         "type": "input",
         "field_type": "int",
-        "value": []
+        "value_options": []
         },
     "residence_country": {
         "type": "select",
         "field_type": "string",
-        "value": ["AF", "AL", "DZ", "AS","AD", "AO", "AI", "AQ",
+        "value_options": ["AF", "AL", "DZ", "AS","AD", "AO", "AI", "AQ",
     "AG", "AR",'AU' ,'AM' ,'AW' ,'AT' ,'AZ' ,'BS' ,'BH' ,'BD',  'BB', 'BY', 
     'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BV', 'BR', 'IO', 
     'BN', "BG", "BF", "BI", "CV", "KH", "CM", "CA", "KY", "CF", "TD", "CL", 
@@ -81,7 +81,7 @@ def read_fields():
     "nationality": {
         "type": "select",
         "field_type": "string",
-        "value": ["AF", "AL", "DZ", "AS","AD", "AO", "AI", "AQ",
+        "value_options": ["AF", "AL", "DZ", "AS","AD", "AO", "AI", "AQ",
     "AG", "AR",'AU' ,'AM' ,'AW' ,'AT' ,'AZ' ,'BS' ,'BH' ,'BD',  'BB', 'BY', 
     'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BV', 'BR', 'IO', 
     'BN', "BG", "BF", "BI", "CV", "KH", "CM", "CA", "KY", "CF", "TD", "CL", 
@@ -106,73 +106,78 @@ def read_fields():
     "gender": {
             "type": "select",
             "value_type": "string",
-            "value": ["Male", "Female"]
+            "value_options": ["Male", "Female"]
         },
     "dob": {
             "type": "input",
             "value_type": "date",
-            "value": []
+            "value_options": []
         },
+    "age":{
+        "type": "input",
+        "value_type": "int",
+        "value_options": []
+    },
     "delivery_score": {
             "type": "select",
             "value_type": "int",
-            "value": [1,2,3,4,5]
+            "value_options": [1,2,3,4,5]
         },
     "current_occupation": {
             "type": "select",
             "value_type": "string",
-            "value": ["Student", "Employed", "Unemployed", "Retired", "Other"]
+            "value_options": ["Student", "Employed", "Unemployed", "Retired", "Other"]
         },
     "qatari_driving_lisence": {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No", " "]
+            "value_options": ["Yes", "No", " "]
         },
     "driving_license_type": {
             "type": "select",
             "value_type": "string",
-            "value": ["Car", "Motorcycle", "Minibus (up to 8 people)", "Bus (over 8 people)"]
+            "value_options": ["Car", "Motorcycle", "Minibus (up to 8 people)", "Bus (over 8 people)"]
         },
     "international_accommodation": {
             "type": "select",
             "value_type": "string",
-            "value": ["Stay in a Hotel, Hostel or Apartment Rental", "Stay with friends or family"]
+            "value_options": ["Stay in a Hotel, Hostel or Apartment Rental", "Stay with friends or family"]
         },
     "medical_condition": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     "disability": {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No", "Prefer not to say"]
+            "value_options": ["Yes", "No", "Prefer not to say"]
         },
     "disability_type": {
             "type": "select",
             "value_type": "string",
-            "value": ["a wheelchair user", "a person with limited mobility (non-wheelchair user)", "blind/partially", 
+            "value_options": ["a wheelchair user", "a person with limited mobility (non-wheelchair user)", "blind/partially", 
 "deaf/hard of hearing", "a person with mental ill health", "other (if other, please specify)", "prefer not to say"]
         },
     "disability_others": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     "social_worker": {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No", "I don't need support"]
+            "value_options": ["Yes", "No", "I don't need support"]
         },
     "dietary_requirement": {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     "special_dietary": {
             "type": "select",
             "value_type": "string",
-            "value": ["Celery and products thereof", "Cereals containing gluten and products thereof", "Crustaceans and products thereof", 
+            "value_options": ["Celery and products thereof", "Cereals containing gluten and products thereof", "Crustaceans and products thereof", 
     "Eggs and products thereof", "Fish and products thereof", "Lupin and products thereof", "Milk and products thereof (including lactose)", 
     "Molluscs and products thereof", "Mustard and products thereof",
     "Nuts i.e. almond, hazelnuts, walnuts, cashews, pecan nuts, Brazil nuts, pistachio nuts, macadamia/ Queensland nuts and products thereof", 
@@ -182,115 +187,131 @@ def read_fields():
     "alergies_other": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     "covid_19_vaccinated": {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     "final_dose_date": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     "education": {
             "type": "select",
             "value_type": "string",
-            "value": ["Masters/post graduate degree", "Secondary/High School", "Undergraduate degree", "Doctorate", "Other", "Primary"]
+            "value_options": ["Masters/post graduate degree", "Secondary/High School", "Undergraduate degree", "Doctorate", "Other", "Primary"]
         },
     "area_of_study": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     "english_level": {
             "type": "select",
             "value_type": "string",
-            "value": ["Strong", "Good", "Poor"]
+            "value_options": ["Strong", "Good", "Poor"]
         },
     "english_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value": ["Native", "Fluent", "Intermediate", "Beginner", "I don't speak English"]
+            "value_options": ["Native", "Fluent", "Intermediate", "Beginner", "I don't speak English"]
         },
     "arabic_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value": ["Native", "Fluent", "Intermediate", "Beginner", "I don't speak Arabic"]
+            "value_options": ["Native", "Fluent", "Intermediate", "Beginner", "I don't speak Arabic"]
+        },
+        "language": {
+            "type": "select",
+            "value_type": "string",
+            "value_options": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+    "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
+    "Swedish", "Other (Please specify in the text box below)"]
         },
     "additional_language_1": {
             "type": "select",
             "value_type": "string",
-            "value": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+            "value_options": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
     "Swedish", "Other (Please specify in the text box below)"]
         },
     "additional_language_1_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value": ["Intermediate", "Beginner"]
+            "value_options": ["Intermediate", "Beginner"]
         },
     "additional_language_2": {
             "type": "select",
             "value_type": "string",
-            "value": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+            "value_options": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
     "Swedish", "Other (Please specify in the text box below)"]
         },
     "additional_language_2_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value": ["Intermediate", "Beginner"]
+            "value_options": ["Intermediate", "Beginner"]
         },
     "additional_language_3": {
             "type": "select",
             "value_type": "string",
-            "value": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+            "value_options": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
     "Swedish", "Other (Please specify in the text box below)"]
         },
     "additional_language_3_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value": ["Intermediate", "Beginner"]
+            "value_options": ["Intermediate", "Beginner"]
         },
     "additional_language_4":{
             "type": "select",
             "value_type": "string",
-            "value": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
+            "value_options": ["Bosnian-Serbian", "Chinese", "Croatian", "Danish", "Dutch", "French", "German", 
     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
     "Swedish", "Other (Please specify in the text box below)"]
         },
     "additional_language_4_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value": ["Intermediate", "Beginner"]
+            "value_options": ["Intermediate", "Beginner"]
         },
     "other_languages": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     "describe_your_it_skills" : {
             "type": "select",
             "value_type": "string",
-            "value": ["Expert", "Advanced", "Intermediate", "Basic"]
+            "value_options": ["Expert", "Advanced", "Intermediate", "Basic"]
         },
     "interpretation_experience": {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes (Non-certified)", "No", "Yes (Certified)"]
+            "value_options": ["Yes (Non-certified)", "No", "Yes (Certified)"]
         },
     "interpretation_language": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
+    "skill":{
+        "type": "select",
+            "value_type": "string",
+            "value_options": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+    "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
+    "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
+    "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
+    "Teamwork", "Time management", "Volunteer management", "Human Rights"]
+    },
     "skill_1": {
             "type": "select",
             "value_type": "string",
-            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+            "value_options": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
@@ -299,7 +320,7 @@ def read_fields():
     "skill_2": {
             "type": "select",
             "value_type": "string",
-            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+            "value_options": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
@@ -308,7 +329,7 @@ def read_fields():
     "skill_3": {
             "type": "select",
             "value_type": "string",
-            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+            "value_options": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
@@ -317,7 +338,7 @@ def read_fields():
     "skill_4": {
             "type": "select",
             "value_type": "string",
-            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+            "value_options": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
@@ -326,7 +347,7 @@ def read_fields():
     "skill_5": {
             "type": "select",
             "value_type": "string",
-            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+            "value_options": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
@@ -335,7 +356,7 @@ def read_fields():
     "skill_6": {
             "type": "select",
             "value_type": "string",
-            "value": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
+            "value_options": ["Ability to handle difficult situations", "Adaptability", "Communication & interpersonal skills", 
     "Conflict resolution", "Customer services", "Event management", "IT skills", "Leadership skills", 
     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation", "Problem-solving", 
     "Project management", "Public speaking", "Relationship building", "Reporting", "Research", "Social media", 
@@ -344,12 +365,12 @@ def read_fields():
     "previous_volunteer": {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     "volunteer_experience": {
             "type": "select",
             "value_type": "string",
-            "value": ["My first volunteering experience", "Customer services", "Supporting people with disabilities", 
+            "value_options": ["My first volunteering experience", "Customer services", "Supporting people with disabilities", 
     "Supporting vulnerable people", "Transport", "Spectator services", "Fan Zones", "Hospitality", "Medical Services", 
     "Supporting Youth Programmes", "Catering", "Operations or Logistics, Ticketing", 
     "IT", "Administration", "Accreditation", "Broadcasting/TV operations", "Media", "Marketing", "Logistics", 
@@ -360,12 +381,12 @@ def read_fields():
     "other_volunteer_experience": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     "participated_event_type": {
             "type": "select",
             "value_type": "string",
-            "value": ["Community events", "Corporate events (conference, congress…)", 
+            "value_options": ["Community events", "Corporate events (conference, congress…)", 
     "FIFA World Cup", "Music festival", "National/region sport competitions", "Summer Olympic Games / Paralympic Games", 
     "Winter Olympic Games / Paralympic Games", "World championship/world cup", "World Expo", "Others", 
     "Continental games", "Football continental competition", "Youth Olympic Games"]
@@ -373,12 +394,12 @@ def read_fields():
     "event_type_other": {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     'preferred_volunteer_role': {
             "type": "select",
             "value_type": "string",
-            "value": ["I don't have a preference", "Access Management", "Accessibility", "Accreditation",
+            "value_options": ["I don't have a preference", "Access Management", "Accessibility", "Accreditation",
      "Arrivals and Departures", "Catering", "Ceremonies", "Communications", "Competition Management",
     "Event Promotion", "Fan Zones", "FIFA Fan Fests", "Guest Management and Protocol", "Health & Safety", 
     "Hospitality", "IT", "Language Services", "Last Mile", "Legal (Brand Protection)", "Marketing", 
@@ -390,164 +411,164 @@ def read_fields():
     'are_you_interested_in_a_leadership_role': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No", " "]
+            "value_options": ["Yes", "No", " "]
         },
     'leadership_experience': {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     'relevant_experience': {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     'ceremonies_yes_no': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'cast_yes_no' : {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No", " "]
+            "value_options": ["Yes", "No", " "]
         },
     'cast_options': {
             "type": "select",
             "value_type": "string",
-            "value": ["Event production", "Hair & Makeup", "Costumes / Fashion", 
+            "value_options": ["Event production", "Hair & Makeup", "Costumes / Fashion", 
     "Scenic / Stage management", "Props", "Audio equipment"]
         },
     'why_interested_in_fifa': {
             "type": "select",
             "value_type": "string",
-            "value": ["I have experience in volunteering/enjoy volunteering", "I want to visit Qatar", 
+            "value_options": ["I have experience in volunteering/enjoy volunteering", "I want to visit Qatar", 
     "I want to give back to Qatar", "I love/am passionate about football", "I want to meet new people", 
     "I want to learn new skills", "I want to be part of one of the biggest sporting events"]
         },
     'rearrange_schedule': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'international_volunteer': {
             "type": "select",
             "value_type": "string",
-            "value": ["Local", "International"]
+            "value_options": ["Local", "International"]
         },
     'collaboration_score' : {
             "type": "select",
             "value_type": "int",
-            "value": [1,2,3,4,5]
+            "value_options": [1,2,3,4,5]
         },
     'motivation_score' : {
             "type": "select",
             "value_type": "int",
-            "value": [1,2,3,4,5]
+            "value_options": [1,2,3,4,5]
         },
     'fwc_availability_pre_tournament_one': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'fwc_availability_pre_tournament_two': {
             "type": "select",
             "value_type": "string",
-            "value":["Yes", "No"]
+            "value_options":["Yes", "No"]
         },
     'availability_during_tournament': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'daily_availability_shift_morning': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'daily_availability_shift_afternoon': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'daily_availability_shift_evening': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'daily_availability_shift_overnight': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'under_18': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'special_group': {
             "type": "select",
             "value_type": "string",
-            "value": ["Kuwait", "Oman", "Qatar", "Saudi Arabia"]
+            "value_options": ["Kuwait", "Oman", "Qatar", "Saudi Arabia"]
         },
     'municipality_address' : {
             "type": "select",
             "value_type": "string",
-            "value": ["Doha", "Al Daayen", "Al Khor", "Al Wakrah", "Al Rayyan", "Al Shahaniya", "Umm Salal", "Al Shamal"]
+            "value_options": ["Doha", "Al Daayen", "Al Khor", "Al Wakrah", "Al Rayyan", "Al Shahaniya", "Umm Salal", "Al Shamal"]
         },
     'previous_role_offer': [],
     'pioneer': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'checkpoint': {
             "type": "select",
             "value_type": "string",
-            "value": ["4.1.1 Interview Passed [Local - English]", "4.2.1 Interview Passed [International - English]"]
+            "value_options": ["4.1.1 Interview Passed [Local - English]", "4.2.1 Interview Passed [International - English]"]
         },
     'reasonable_adjustments': {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     'event_experience': {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     'passion_score': {
             "type": "select",
             "value_type": "int",
-            "value": [1,2,3,4,5]
+            "value_options": [1,2,3,4,5]
         },
     'commitment_score': {
             "type": "select",
             "value_type": "int",
-            "value": [1,2,3,4,5]
+            "value_options": [1,2,3,4,5]
         },
     'team_leader_experience': {
             "type": "select",
             "value_type": "string",
-            "value": ["Work", "University", "Volunteering", "Sport Events", None]
+            "value_options": ["Work", "University", "Volunteering", "Sport Events", None]
         },
     'team_leader_qualities': {
             "type": "select",
             "value_type": "string",
-            "value": ["Communication", "Team Work", "Positivity", "Diplomatic", 
+            "value_options": ["Communication", "Team Work", "Positivity", "Diplomatic", 
     "Support", "Motivation", "Punctual", "Trustworthy", "Responsible", "Active Listening"]
         },
 
     'team_leader_recommendation': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "Maybe", "No"]
+            "value_options": ["Yes", "Maybe", "No"]
         },
 
     'availability': {
             "type": "select",
             "value_type": "string",
-            "value": ["Understands need to plan schedule", "Already planned leave", 
+            "value_options": ["Understands need to plan schedule", "Already planned leave", 
     "Requires release letter from employer", "States will attend shift after work", 
     "Does not appear to understand shift requirement/commitment"],
     'experience_recommendation': ["N/A", "Access Management", "Accessibility", 
@@ -562,7 +583,7 @@ def read_fields():
     'soft_skills': {
             "type": "select",
             "value_type": "string",
-            "value": ["Adaptability", "Attention to detail", "Communication & Interpersonal", "Creativity", 
+            "value_options": ["Adaptability", "Attention to detail", "Communication & Interpersonal", "Creativity", 
     "Customer Service", "Decision Making", "Empathy", "Multitasking", "Positive Attitude", "Self-Motivated", 
     "Time Management", "Patience", "Work ethic", "Conflict Resolution", None]
         },
@@ -570,7 +591,7 @@ def read_fields():
     'technical_skills': {
             "type": "select",
             "value_type": "string",
-            "value": ["HR / Interview", "IT (Systems & Software Proficiency)", "Editorial (Typing & Writing)", 
+            "value_options": ["HR / Interview", "IT (Systems & Software Proficiency)", "Editorial (Typing & Writing)", 
     "Problem-solving (Critical Thinking)", "Trouble Shooting", "Event management", "Leadership skills", 
     "Mentoring skills & training others", "Multilingual", "Multitasking", "Organisation & planning", 
     "Project management", "Public speaking", "Time management", "Teamwork", "Reporting", "Research", 
@@ -579,34 +600,34 @@ def read_fields():
     'recommend_as_volunteer': {
             "type": "select",
             "value_type": "string",
-            "value": ["Yes", "No"]
+            "value_options": ["Yes", "No"]
         },
     'rejection_justification': {
             "type": "select",
             "value_type": "string",
-            "value": ["Attitude", "Poor Communication", "No motivation shown", 
+            "value_options": ["Attitude", "Poor Communication", "No motivation shown", 
     "Interest in watching matches only", "Inappropriate comments", "Lack of commitment", 
     "No understanding of volunteering role and responsibilities", "Unable to respond to Questions", "Poor availability"]
         },
     'interview_notes': {
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     'why_rejected_candidate':{
             "type": "input",
             "value_type": "string",
-            "value": []
+            "value_options": []
         },
     'role_offer_id' : {
             "type": "input",
             "value_type": "int",
-            "value": []
+            "value_options": []
         },
     'status': {
             "type": "select",
             "value_type": "string",
-            "value": ["Assigned", "Pending", "Accepted", "Confirmed", "Complete", 
+            "value_options": ["Assigned", "Pending", "Accepted", "Confirmed", "Complete", 
             "Declined", "Removed", "Expired", "Waitlist Offered", "Waitlist Accepted", 
             "Waitlist Declined", "Pre-assigned", "Not Approved", "Waitlist Assigned"]
         }
@@ -660,6 +681,14 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                 models.Volunteers.additional_language_4 == value)).all()
                 matched_users.append(users)
 
+        if requirement=='language' and operator == 'not':
+            # for value in filter["value"]:
+                value = None
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1 != value, 
+                models.Volunteers.additional_language_2 != value, models.Volunteers.additional_language_3 != value,
+                models.Volunteers.additional_language_4 != value)).all()
+                matched_users.append(users)
+
         if requirement=='language' and operator == 'contains':
             for value in filter["value"]:
                 users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1.contains(value), 
@@ -681,6 +710,13 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                 models.Volunteers.additional_language_4_fluency_level.contains(value))).all()
                 matched_users.append(users)
 
+        if requirement=='language_fluency_level' and operator=='not':
+            for value in filter["value"]:
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1_fluency_level != value, 
+                models.Volunteers.additional_language_2_fluency_level != value, models.Volunteers.additional_language_3_fluency_level != value,
+                models.Volunteers.additional_language_4_fluency_level != value)).all()
+                matched_users.append(users)
+
         if requirement=='skill' and operator=='=':
             print('I am here skill = if')
             for value in filter["value"]:
@@ -688,6 +724,15 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                 models.Volunteers.skill_2 == value, models.Volunteers.skill_3 == value,
                 models.Volunteers.skill_4 == value, models.Volunteers.skill_5 == value,
                 models.Volunteers.skill_6 == value)).all()
+                matched_users.append(users)
+        
+        if requirement=='skill' and operator=='not':
+            print('I am here skill not if')
+            for value in filter["value"]:
+                users = db.query(models.Volunteers).filter(or_(models.Volunteers.skill_1 != value, 
+                models.Volunteers.skill_2 != value, models.Volunteers.skill_3 != value,
+                models.Volunteers.skill_4 != value, models.Volunteers.skill_5 != value,
+                models.Volunteers.skill_6 != value)).all()
                 matched_users.append(users)
         
 
@@ -914,7 +959,8 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "interview_notes": key["Interview Notes / Comments"],
                 "why_rejected_candidate": key["Explain us why you have rejected the candidate in detail"],
                 "status": key["Role Offer Status"],
-                "municipality_address" : key["Municipality Address"], 
+                "municipality_address" : key["Municipality Address"],
+                "age": key["age"],
                 "created_at": datetime.now()
                 }
                 saved_users.append(new_user)
@@ -1015,6 +1061,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "why_rejected_candidate": key["Explain us why you have rejected the candidate in detail"],
                 "status": key["Role Offer Status"],
                 "municipality_address" : key["Municipality Address"],
+                "age": key["age"],
                 "updated_at": datetime.now()
                 }
                 updated_users.append(update_user)

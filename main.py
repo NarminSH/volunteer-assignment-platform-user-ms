@@ -674,14 +674,13 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             }
             return response
         
-        if requirement=='language' and operator == '=':
+        if requirement=='language' and operator == '=' and len(matched_users) == 0:
             print("language is =")
             for value in filter["value"]:
                 users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1 == value, 
                 models.Volunteers.additional_language_2 == value, models.Volunteers.additional_language_3 == value,
                 models.Volunteers.additional_language_4 == value)).all()
                 matched_users.append(users)
-        print(len(matched_users), 'yeyeyeyey')
 
         if requirement=='language' and operator == 'contains' and len(matched_users) == 0:
             for value in filter["value"]:
@@ -730,19 +729,28 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             if requirement == "language_fluency_level":
                 for value in filter["value"]: #second loop to get all values, otherwise will always get last value
                     for user in filtered_users:
-                            print("Value is", value, " inside for loop in additional_language_1_fluency_level")
                             if operator == "=":
                                 if user.additional_language_1_fluency_level == value or user.additional_language_2_fluency_level == value or user.additional_language_3_fluency_level == value or user.additional_language_4_fluency_level == value:
                                     if user not in last_users:
+                                        print(user.candidate_id, "language fluency level user id")
                                         last_users.append(user)
             if requirement == "skill":
                 for value in filter["value"]: #second loop to get all values, otherwise will always get last value
                     for user in filtered_users:
-                            print("Value is", value, " inside for loop in skill")
                             if operator == "=":
                                 if user.skill_1 == value or user.skill_2 == value or user.skill_3 == value or user.skill_4 == value or user.skill_5 == value or user.skill_6 == value:
                                     if user not in last_users:
+                                        print(user.candidate_id, 'skill user id')
                                         last_users.append(user)
+            if requirement == "language":
+                for value in filter["value"]: #second loop to get all values, otherwise will always get last value
+                    for user in filtered_users:
+                            if operator == "=":
+                                if user.additional_language_1 == value or user.additional_language_2 == value or user.additional_language_3 == value or user.additional_language_4 == value:
+                                    if user not in last_users:
+                                        print(user.candidate_id, 'language user id')
+                                        last_users.append(user)
+
 
         if matched_users != [] and requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level':
 
@@ -806,6 +814,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             print(len(users), 'length of users when value length is 1')
 
 
+    
     if filtered_users == [] and matched_users != []: #if filter is only language, skill or fluency_level
         print('filtering is either skill, language or fluency_level')
         for users in matched_users:

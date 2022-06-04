@@ -14,7 +14,7 @@ def filter_users(db: Session, requirement, operator, value):
 
     if operator == '=':
         print('operator is =')
-        return db.query(models.Volunteers).filter(and_(getattr(models.Volunteers, requirement) == value), (getattr(models.Volunteers, requirement) == value)).all()
+        return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) == value).all()
     elif operator == '>':
         print('operator is >')
         return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) > value).all()

@@ -660,11 +660,10 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     start = (page_number-1) * page_size
     end = start + page_size
 
-
+    
     for filter in filter_list:
         requirement = filter["requirement_name"]
         operator = filter["operator"]
-
 
         if requirement == 'Requirement' and operator=='Operator': #if page has just opened
             all_users = get_users(db=db)
@@ -721,100 +720,144 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                 models.Volunteers.skill_6.contains(value))).all()
                 matched_users.append(users)
 
-        if matched_users != []:
-            for users in matched_users:
-                if users != []:
-                    for one_user in users: 
-                        filtered_users.append(one_user) #to get rid of list inside of a list
-            if requirement == "language_fluency_level":
-                for value in filter["value"]: #second loop to get all values, otherwise will always get last value
-                    for user in filtered_users:
-                            if operator == "=":
-                                if user.additional_language_1_fluency_level == value or user.additional_language_2_fluency_level == value or user.additional_language_3_fluency_level == value or user.additional_language_4_fluency_level == value:
-                                    if user not in last_users:
-                                        print(user.candidate_id, "language fluency level user id")
-                                        last_users.append(user)
-            if requirement == "skill":
-                for value in filter["value"]: #second loop to get all values, otherwise will always get last value
-                    for user in filtered_users:
-                            if operator == "=":
-                                if user.skill_1 == value or user.skill_2 == value or user.skill_3 == value or user.skill_4 == value or user.skill_5 == value or user.skill_6 == value:
-                                    if user not in last_users:
-                                        print(user.candidate_id, 'skill user id')
-                                        last_users.append(user)
-            if requirement == "language":
-                for value in filter["value"]: #second loop to get all values, otherwise will always get last value
-                    for user in filtered_users:
-                            if operator == "=":
-                                if user.additional_language_1 == value or user.additional_language_2 == value or user.additional_language_3 == value or user.additional_language_4 == value:
-                                    if user not in last_users:
-                                        print(user.candidate_id, 'language user id')
-                                        last_users.append(user)
+        # if matched_users != []:
+        #     if len(filtered_users) == 0:
+        #         for users in matched_users:
+        #             if users != []:
+        #                 for one_user in users: 
+        #                     filtered_users.append(one_user) #to get rid of list inside of a list
+        #     if requirement == "language_fluency_level":
+        #         for value in filter["value"]: #second loop to get all values, otherwise will always get last value
+        #             for user in filtered_users:
+        #                     if operator == "=":
+        #                         if user.additional_language_1_fluency_level == value or user.additional_language_2_fluency_level == value or user.additional_language_3_fluency_level == value or user.additional_language_4_fluency_level == value:
+        #                             if user not in last_users:
+        #                                 print(user.candidate_id, "language fluency level user id")
+        #                                 last_users.append(user)
+        #     if requirement == "skill":
+        #         for value in filter["value"]: #second loop to get all values, otherwise will always get last value
+        #             for user in filtered_users:
+        #                     if operator == "=":
+        #                         if user.skill_1 == value or user.skill_2 == value or user.skill_3 == value or user.skill_4 == value or user.skill_5 == value or user.skill_6 == value:
+        #                             if user not in last_users:
+        #                                 print(user.candidate_id, 'skill user id')
+        #                                 last_users.append(user)
+        #     if requirement == "language":
+        #         for value in filter["value"]: #second loop to get all values, otherwise will always get last value
+        #             for user in filtered_users:
+        #                     if operator == "=":
+        #                         if user.additional_language_1 == value or user.additional_language_2 == value or user.additional_language_3 == value or user.additional_language_4 == value:
+        #                             if user not in last_users:
+        #                                 print(user.candidate_id, 'language user id')
+        #                                 last_users.append(user)
 
 
-        if matched_users != [] and requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level':
+        # if matched_users != [] and requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level':
 
-            print("first if")
-            print(matched_users)
-            for users in matched_users:
-                if users != []:
-                    for one_user in users: 
-                        filtered_users.append(one_user)
+        #     print("first if")
+        #     if len(filtered_users) == 0:
+        #         print('hereregerfsvedsvsfsd')
+        #         for users in matched_users:
+        #             if users != []:
+        #                 for one_user in users: 
+        #                     filtered_users.append(one_user)
 
-            for value in filter["value"]: #second loop to get all values, otherwise will always get last value
-                for user in filtered_users:
-                        print("Value is", value, " inside for loop")
-                        if operator == "=":
-                            if (getattr(user, requirement) == value):
-                                if user not in last_users:
-                                    last_users.append(user)
-                        elif operator == "contains":
-                            print("elif operator contains second loop")
-                            if value in (getattr(user, requirement)):
-                                if user not in last_users:
-                                    last_users.append(user)
-                        elif operator == ">":
-                            print('second loop operator >', (getattr(user, requirement)))
-                            if (getattr(user, requirement)) > value:
-                                if user not in last_users:
-                                    last_users.append(user)
-                                    print('appended')
-                        elif operator == "<":
-                            print('second loop operator <', (getattr(user, requirement)))
-                            if (getattr(user, requirement)) < value:
-                                if user not in last_users:
-                                    last_users.append(user)
-                                    print('appended')
-                        elif operator == "<=":
-                            if (getattr(user, requirement)) <= value:
-                                if user not in last_users:
-                                    last_users.append(user)
-                        elif operator == ">=":
-                            if (getattr(user, requirement)) >= value:
-                                if user not in last_users:
-                                    last_users.append(user)
-                        elif operator == "not":
-                            if (getattr(user, requirement)) != value:
-                                if user not in last_users:
-                                    last_users.append(user)
-                print(len(last_users), 'len last') 
+        #     print(len(filtered_users), "len len len len")
+        #     count = 0
+        #     for value in filter["value"]: #second loop to get all values, otherwise will always get last value
+        #         for user in filtered_users:
+        #                 count += 1
+        #                 if operator == "=":
+        #                     if (getattr(user, requirement) == value):
+        #                         print('got here', user.candidate_id)
+        #                         print("sherti odedi", getattr(user, requirement), value)
+        #                         if user not in last_users:
+        #                             print(user.candidate_id, value, getattr(user, requirement), "hererererereere")
+        #                             last_users.append(user)
+        #                             print('!!!!!!!!!!!!!!!', len(last_users))
+        #                     # else:
+        #                     #     print('got to remove', user.candidate_id, user.age)
+        #                     #     print("sherti odemedi silirem", getattr(user, requirement), value)
+        #                         # print("I just removed inappropriate user")
+        #                         # last_users.remove(user)
+        #                         # print('after removing user', len(last_users))
+        #                 elif operator == "contains":
+        #                     print("elif operator contains second loop")
+        #                     if value in (getattr(user, requirement)):
+        #                         if user not in last_users:
+        #                             last_users.append(user)
+        #                 elif operator == ">":
+        #                     print('second loop operator >', (getattr(user, requirement)))
+        #                     if (getattr(user, requirement)) > value:
+        #                         if user not in last_users:
+        #                             last_users.append(user)
+        #                             print('appended')
+        #                 elif operator == "<":
+        #                     print('second loop operator <', (getattr(user, requirement)))
+        #                     if (getattr(user, requirement)) < value:
+        #                         if user not in last_users:
+        #                             last_users.append(user)
+        #                             print('appended')
+        #                 elif operator == "<=":
+        #                     if (getattr(user, requirement)) <= value:
+        #                         if user not in last_users:
+        #                             last_users.append(user)
+        #                 elif operator == ">=":
+        #                     if (getattr(user, requirement)) >= value:
+        #                         if user not in last_users:
+        #                             last_users.append(user)
+        #                 elif operator == "not":
+        #                     if (getattr(user, requirement)) != value:
+        #                         if user not in last_users:
+        #                             last_users.append(user)
+        #         print(len(filtered_users), 'len last filtered') 
+        #         print(count)
 
-        if requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level':
+        if requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level' and len(filter["value"]) > 1 and len(matched_users) == 0:
             print("second if")
-            if len(filter["value"]) > 1 and len(matched_users) == 0: #check len match users so it won't send request to db again if it is not empty
-                for value in filter["value"]:
-                    users = filter_users(db, requirement=requirement, operator=operator, value=value) 
-                    print(len(users), 'last users when value length is more than one')
-                    matched_users.append(users)   
+            for value in filter["value"]:
+                users = filter_users(db, requirement=requirement, operator=operator, value=value) 
+                print(len(users), 'last users when value length is more than one')
+                matched_users.append(users)   
 
         if requirement != "skill" and requirement != "language" and requirement != 'language_fluency_level' and len(filter["value"])==1 and len(matched_users) == 0:
+            print("third if")
             value = filter["value"][0]
             users = filter_users(db, requirement=requirement, operator=operator, value=value)
             matched_users.append(users)
             print(len(users), 'length of users when value length is 1')
 
 
+    for users in matched_users:
+        if users != []:
+            for one_user in users: 
+                filtered_users.append(one_user)
+
+
+    added_users = []
+    print(len(filtered_users), 'trtrtrtrtrtrt')
+    for user in filtered_users:
+        check_availability= True
+        for filter in filter_list:
+            requirement = filter["requirement_name"]
+            operator = filter["operator"]
+            val = filter['value']
+            print(filter, 'zzzzzzz')
+            print(".....................")
+            if getattr(user, requirement) == val[0] and check_availability != False:
+                print(user.candidate_id)
+                print(".....................")
+                continue
+            else: 
+                check_availability = False
     
+        if check_availability != False:
+            print('in if in if ', user.candidate_id)
+            added_users.append(user)
+            print(len(added_users), 'qwqwqwqwqwqwqqw')
+                
+
+
     if filtered_users == [] and matched_users != []: #if filter is only language, skill or fluency_level
         print('filtering is either skill, language or fluency_level')
         for users in matched_users:
@@ -828,10 +871,12 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     else:
         print("returning last users list in else statement", len(last_users))
         response = {
-            "data": last_users[start:end],
-            "total_pages": len(last_users)
+            "data": added_users[start:end],
+            "total_pages": len(added_users)
         }
         return response
+    
+
     
 
 

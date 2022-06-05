@@ -12,7 +12,7 @@ def get_user(db: Session, candidate_id: int):
 
 def filter_users(db: Session, requirement, operator, value):
 
-    if operator == '=':
+    if operator == 'equal':
         print('operator is =')
         return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) == value).all()
     elif operator == '>':
@@ -27,7 +27,7 @@ def filter_users(db: Session, requirement, operator, value):
     elif operator == '<=':
         print('operator is <=')
         return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) <= value).all()
-    elif operator == 'not':
+    elif operator == 'not equal':
         print('operator is !=')
         return db.query(models.Volunteers).filter(getattr(models.Volunteers, requirement) != value).all()
     elif operator == 'contains':

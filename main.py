@@ -675,6 +675,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             operator = operators_dict[filter["operator"]]
             if "don't" in val:
                 val = val.replace("don't", "don''t")
+            
             if requirement == "skill":
                 unique_reqs = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]
                 for index_re, re in enumerate(unique_reqs):
@@ -718,8 +719,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     
     print(final_where_statement, "finaq request to be executed")
 
-    # where_statement = f"'where' {final_where_statement} if len({final_where_statement}) > 0 else ''"
-    # print(where_statement)
+
     users = db.query(models.Volunteers).from_statement(
     text(f"""SELECT * from volunteers where {final_where_statement};""")).all()
     print(len(users), 'matched users count')

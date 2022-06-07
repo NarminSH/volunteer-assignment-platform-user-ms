@@ -686,47 +686,38 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                 if requirement == "skill":
                     unique_skills = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]
                     for index_req, req in enumerate(unique_skills):
-                        print("......", single_where_statement)
                         single_where_statement += f"{req} {operator} '{val}' "
                         if index_req != len(unique_skills)-1:
                             single_where_statement += " or "
-                            print(single_where_statement, "........")
                         if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
                             single_where_statement += " or "
 
                 if requirement == "language":
                     unique_languages = ["additional_language_1", "additional_language_2", "additional_language_3", "additional_language_4"]
                     for index_lan, lan in enumerate(unique_languages):
-                        print("......", single_where_statement)
                         single_where_statement += f"{lan} {operator} '{val}'"
                         if index_lan != len(unique_languages)-1:
                             single_where_statement += " or "
-                            print(single_where_statement, "........")
                         if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
                             single_where_statement += " or "
                 
                 if requirement == "language_fluency_level":
                     unique_fluency_levels = ["additional_language_1_fluency_level", "additional_language_2_fluency_level", "additional_language_3_fluency_level", "additional_language_4_fluency_level"]
                     for index_fluency, fluency in enumerate(unique_fluency_levels):
-                        print("......", single_where_statement)
                         single_where_statement += f"{fluency} {operator} '{val}'"
                         if index_fluency != len(unique_fluency_levels)-1:
                             single_where_statement += " or "
-                            print(single_where_statement, "........")
                         if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
                             single_where_statement += " or "
                 
                 if requirement != "skill" and requirement != "language" and requirement != "language_fluency_level":
-                    print("in else statement")
                     single_where_statement += f"{requirement} {operator} '{val}'"
                     if index != len(filter["value"])-1:
                         single_where_statement += " or "
-                        print(single_where_statement, "initial request")
             single_where_statement += ")"
             final_where_statement += single_where_statement
 
         if filter_index != len(filter_list)-1:
-            print(filter_index, len(filter_list)-1)
             final_where_statement += " and "  
     
     print(final_where_statement, "finaq request to be executed")

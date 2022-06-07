@@ -7,3 +7,5 @@ __pycache__
 .env-prod
 .venv/
 .venv-prod
+.env-local
+.env-local/

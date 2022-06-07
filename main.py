@@ -1,11 +1,10 @@
 
 from datetime import datetime
-from enum import unique
 import os.path
-from typing import List, final
+from typing import List
 import shutil
 import numpy as np
-from sqlalchemy import inspect, or_, text
+from sqlalchemy import inspect, text
 import pandas as pd
 import uvicorn
 from fastapi import FastAPI, Depends, File, UploadFile, status, BackgroundTasks
@@ -13,11 +12,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from users import models
 from users.database import engine, SessionLocal
-from users.crud import get_user, filter_users, get_users
+from users.crud import get_user, get_users
 from users import models
 from fastapi.responses import FileResponse
+from fastapi import APIRouter
 
-app = FastAPI()
+
+URL_PREFIX = os.getenv('URL_PREFIX')
+
+
+app = FastAPI(docs_url=f'{URL_PREFIX}')
+
+prefix_router = APIRouter(prefix=f"{URL_PREFIX}")
+
 
 origins = ["*"]
 
@@ -41,13 +48,13 @@ def get_db():
         db.close()
 
 
-@app.get('/volunteer-fields')
+@prefix_router.get('/volunteer-fields')
 def read_fields():
     columns = [column.name for column in inspect(models.Volunteers).c]
     return columns
 
 
-@app.get('/volunteer-fields-new')
+@prefix_router.get('/volunteer-fields-new')
 def read_fields():
     field_names_obj = {
     "candidate_id": {
@@ -638,20 +645,20 @@ def read_fields():
 
 
 
-@app.get('/volunteers')
+@prefix_router.get('/volunteers')
 def read_volunteers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = get_users(db, skip=skip, limit=limit)
     return users
 
 
 
-@app.get('/volunteers/{user_id}')
+@prefix_router.get('/volunteers/(user_id)')
 def read_volunteer(user_id: int, db: Session = Depends(get_db)):
     user = get_user(db=db, user_id=user_id)
     return user    
 
 
-@app.post('/filter-volunteers')
+@prefix_router.post('/filter-volunteers')
 def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 10, db: Session = Depends(get_db)):
     print(filter_list)
 
@@ -737,7 +744,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     
 
 
-@app.post('/import-users-data')
+@prefix_router.post('/import-users-data')
 def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), db: Session = Depends(get_db)):
     background_task.add_task(check_role, db=db, background_task=background_task)
     file_name = file.filename
@@ -995,7 +1002,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
 
 
 
-@app.get('/record-history')
+@prefix_router.get('/record-history')
 def record_history(db: Session = Depends(get_db)):
     updated_users = []
     users_db = db.query(models.Volunteers).all()
@@ -1048,7 +1055,7 @@ def record_history(db: Session = Depends(get_db)):
 
 
 
-@app.get('/export-volunteers')
+@prefix_router.get('/export-volunteers')
 def export_volunteers(db: Session = Depends(get_db)):
     ids = []
     statuses = []
@@ -1082,7 +1089,7 @@ def export_volunteers(db: Session = Depends(get_db)):
     
 
 
-@app.get('/check-role')
+@prefix_router.get('/check-role')
 def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
 
     print('inside check role func')
@@ -1112,39 +1119,13 @@ def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
 
 
 
-@app.get('/user-history/{candidate_id}')
+@prefix_router.get('/user-history/(candidate_id)')
 def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
     histories = db.query(models.Histories).filter(models.Histories.user_id == candidate_id).all()
     return histories
 
 
+app.include_router(prefix_router)
 
-
-# def nott():
-#     if requirement=='skill' and operator=='not' and len(matched_users) == 0:
-#     print('I am here skill not if')
-#     for value in filter["value"]:
-#         users = db.query(models.Volunteers).filter(or_(models.Volunteers.skill_1 != value, 
-#         models.Volunteers.skill_2 != value, models.Volunteers.skill_3 != value,
-#         models.Volunteers.skill_4 != value, models.Volunteers.skill_5 != value,
-#         models.Volunteers.skill_6 != value)).all()
-#         matched_users.append(users)
-    
-#     if requirement=='language_fluency_level' and operator=='not' and len(matched_users) == 0:
-#             for value in filter["value"]:
-#                 users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1_fluency_level != value, 
-#                 models.Volunteers.additional_language_2_fluency_level != value, models.Volunteers.additional_language_3_fluency_level != value,
-#                 models.Volunteers.additional_language_4_fluency_level != value)).all()
-#                 matched_users.append(users)
-    
-#     if requirement=='language' and operator == 'not' and len(matched_users) == 0:
-#             # for value in filter["value"]:
-#                 value = None
-#                 users = db.query(models.Volunteers).filter(or_(models.Volunteers.additional_language_1 != value, 
-#                 models.Volunteers.additional_language_2 != value, models.Volunteers.additional_language_3 != value,
-#                 models.Volunteers.additional_language_4 != value)).all()
-#                 matched_users.append(users)
-
-#hhhh
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8001)

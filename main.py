@@ -2,7 +2,7 @@
 from datetime import datetime
 from enum import unique
 import os.path
-from typing import List
+from typing import List, final
 import shutil
 import numpy as np
 from sqlalchemy import inspect, or_, text
@@ -662,63 +662,77 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     for filter_index, filter in enumerate(filter_list):
         print(filter_index, filter)
         requirement = filter["requirement_name"]
-        val = filter["value"]
+        
         operators_dict = {
             "equal":"=",
             "not equal": "!=",
             "contains": "ILIKE",
         }
 
-        single_where_statement = ""
-        single_where_statement += "("
-        for index, val in enumerate(filter["value"]):
-            operator = operators_dict[filter["operator"]]
-            if "don't" in val:
-                val = val.replace("don't", "don''t")
-            
-            if requirement == "skill":
-                unique_reqs = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]
-                for index_re, re in enumerate(unique_reqs):
-                    print("......", single_where_statement)
-                    single_where_statement += f"{re} {operator} '{val}' "
-                    if index_re != len(unique_reqs)-1:
-                        single_where_statement += " or "
-                        print(single_where_statement, "........")
+        if filter["value"] == [] and filter["operator"] == "equal":
+            final_where_statement += f"({requirement} IS NULL)"
 
-            if requirement == "language":
-                unique_reqss = ["additional_language_1", "additional_language_2", "additional_language_3", "additional_language_4"]
-                for index_res, res in enumerate(unique_reqss):
-                    print("......", single_where_statement)
-                    single_where_statement += f"{res} {operator} '{val}'"
-                    if index_res != len(unique_reqss)-1:
+        if filter["value"] == [] and filter["operator"] == "not equal":
+            final_where_statement += f"({requirement} IS NOT NULL)"
+
+        if filter["value"] != []:
+            single_where_statement = ""
+            single_where_statement += "("
+            for index, val in enumerate(filter["value"]):
+                operator = operators_dict[filter["operator"]]
+                if "don't" in val:
+                    val = val.replace("don't", "don''t")
+                
+                if requirement == "skill":
+                    unique_skills = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]
+                    for index_req, req in enumerate(unique_skills):
+                        print("......", single_where_statement)
+                        single_where_statement += f"{req} {operator} '{val}' "
+                        if index_req != len(unique_skills)-1:
+                            single_where_statement += " or "
+                            print(single_where_statement, "........")
+                        if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
+                            single_where_statement += " or "
+
+                if requirement == "language":
+                    unique_languages = ["additional_language_1", "additional_language_2", "additional_language_3", "additional_language_4"]
+                    for index_lan, lan in enumerate(unique_languages):
+                        print("......", single_where_statement)
+                        single_where_statement += f"{lan} {operator} '{val}'"
+                        if index_lan != len(unique_languages)-1:
+                            single_where_statement += " or "
+                            print(single_where_statement, "........")
+                        if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
+                            single_where_statement += " or "
+                
+                if requirement == "language_fluency_level":
+                    unique_fluency_levels = ["additional_language_1_fluency_level", "additional_language_2_fluency_level", "additional_language_3_fluency_level", "additional_language_4_fluency_level"]
+                    for index_fluency, fluency in enumerate(unique_fluency_levels):
+                        print("......", single_where_statement)
+                        single_where_statement += f"{fluency} {operator} '{val}'"
+                        if index_fluency != len(unique_fluency_levels)-1:
+                            single_where_statement += " or "
+                            print(single_where_statement, "........")
+                        if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
+                            single_where_statement += " or "
+                
+                if requirement != "skill" and requirement != "language" and requirement != "language_fluency_level":
+                    print("in else statement")
+                    single_where_statement += f"{requirement} {operator} '{val}'"
+                    if index != len(filter["value"])-1:
                         single_where_statement += " or "
-                        print(single_where_statement, "........")
-            
-            if requirement == "language_fluency_level":
-                unique_reqss = ["additional_language_1_fluency_level", "additional_language_2_fluency_level", "additional_language_3_fluency_level", "additional_language_4_fluency_level"]
-                for index_res, res in enumerate(unique_reqss):
-                    print("......", single_where_statement)
-                    single_where_statement += f"{res} {operator} '{val}'"
-                    if index_res != len(unique_reqss)-1:
-                        single_where_statement += " or "
-                        print(single_where_statement, "........")
-            
-            if requirement != "skill" and requirement != "language" and requirement != "language_fluency_level":
-                print("in else statement")
-                single_where_statement += f"{requirement} {operator} '{val}'"
-                if index != len(filter["value"])-1:
-                    single_where_statement += " or "
-                    print(single_where_statement, "initial request")
+                        print(single_where_statement, "initial request")
             single_where_statement += ")"
             final_where_statement += single_where_statement
 
         if filter_index != len(filter_list)-1:
-            print(index, len(filter_list)-1)
-            print(final_where_statement, "final request")
+            print(filter_index, len(filter_list)-1)
             final_where_statement += " and "  
     
     print(final_where_statement, "finaq request to be executed")
 
+    # fin_req1 = "where {final_where_statement}".format(final_where_statement=final_where_statement if final_where_statement != [] else "she")
+    # print(fin_req1)
 
     users = db.query(models.Volunteers).from_statement(
     text(f"""SELECT * from volunteers where {final_where_statement};""")).all()
@@ -870,12 +884,12 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "created_at": datetime.now()
                 }
                 saved_users.append(new_user)
-                if len(saved_users) == 100:
-                    print(datetime.now(), "saving 100 user")
-                    db.bulk_insert_mappings(models.Volunteers, saved_users)
-                    print(datetime.now(), 'before committing 100 user')
-                    db.commit()
-                    print(datetime.now(), 'finished saving 100 user')
+                # if len(saved_users) == 100:
+                #     print(datetime.now(), "saving 100 user")
+                #     db.bulk_insert_mappings(models.Volunteers, saved_users)
+                #     print(datetime.now(), 'before committing 100 user')
+                #     db.commit()
+                #     print(datetime.now(), 'finished saving 100 user')
             else:
                 update_user = {
                 "candidate_id": candidate_id,
@@ -971,12 +985,12 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "updated_at": datetime.now()
                 }
                 updated_users.append(update_user)
-        # if saved_users != []:
-        #     print(datetime.now(), "saving")
-        #     db.bulk_insert_mappings(models.Volunteers, saved_users)
-        #     print(datetime.now())
-        #     db.commit()
-        #     print(datetime.now())
+        if saved_users != []:
+            print(datetime.now(), "saving")
+            db.bulk_insert_mappings(models.Volunteers, saved_users)
+            print(datetime.now())
+            db.commit()
+            print(datetime.now())
         if updated_users != []:
             print("updated users")
             print(datetime.now())

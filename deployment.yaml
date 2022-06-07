@@ -35,7 +35,9 @@ spec:
           value: "vap-db.postgres.database.azure.com"
         - name:  POSTGRES_PORT
           value: "5432"
-       
+        - name:  URL_PREFIX
+          value: /candidates
+
 
 ---
 apiVersion: v1

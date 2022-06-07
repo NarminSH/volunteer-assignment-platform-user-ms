@@ -18,7 +18,12 @@ from fastapi.responses import FileResponse
 from fastapi import APIRouter
 
 
-app = FastAPI()
+URL_PREFIX = os.getenv('URL_PREFIX')
+
+
+app = FastAPI(docs_url=f'{URL_PREFIX}/docs',openapi_url=f'{URL_PREFIX}/openapi.json')
+
+prefix_router = APIRouter(prefix=f"{URL_PREFIX}")
 
 
 origins = ["*"]
@@ -43,13 +48,13 @@ def get_db():
         db.close()
 
 
-@app.get('/volunteer-fields')
+@prefix_router.get('/volunteer-fields')
 def read_fields():
     columns = [column.name for column in inspect(models.Volunteers).c]
     return columns
 
 
-@app.get('/volunteer-fields-new')
+@prefix_router.get('/volunteer-fields-new')
 def read_fields():
     field_names_obj = {
     "candidate_id": {
@@ -640,20 +645,20 @@ def read_fields():
 
 
 
-@app.get('/volunteers')
+@prefix_router.get('/volunteers')
 def read_volunteers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = get_users(db, skip=skip, limit=limit)
     return users
 
 
 
-@app.get('/volunteers/(user_id)')
+@prefix_router.get('/volunteers/(user_id)')
 def read_volunteer(user_id: int, db: Session = Depends(get_db)):
     user = get_user(db=db, user_id=user_id)
     return user    
 
 
-@app.post('/filter-volunteers')
+@prefix_router.post('/filter-volunteers')
 def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 10, db: Session = Depends(get_db)):
     print(filter_list)
 
@@ -739,7 +744,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     
 
 
-@app.post('/import-users-data')
+@prefix_router.post('/import-users-data')
 def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), db: Session = Depends(get_db)):
     background_task.add_task(check_role, db=db, background_task=background_task)
     file_name = file.filename
@@ -997,7 +1002,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
 
 
 
-@app.get('/record-history')
+@prefix_router.get('/record-history')
 def record_history(db: Session = Depends(get_db)):
     updated_users = []
     users_db = db.query(models.Volunteers).all()
@@ -1050,7 +1055,7 @@ def record_history(db: Session = Depends(get_db)):
 
 
 
-@app.get('/export-volunteers')
+@prefix_router.get('/export-volunteers')
 def export_volunteers(db: Session = Depends(get_db)):
     ids = []
     statuses = []
@@ -1084,7 +1089,7 @@ def export_volunteers(db: Session = Depends(get_db)):
     
 
 
-@app.get('/check-role')
+@prefix_router.get('/check-role')
 def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
 
     print('inside check role func')
@@ -1114,10 +1119,13 @@ def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
 
 
 
-@app.get('/user-history/(candidate_id)')
+@prefix_router.get('/user-history/(candidate_id)')
 def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
     histories = db.query(models.Histories).filter(models.Histories.user_id == candidate_id).all()
     return histories
+
+
+app.include_router(prefix_router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8001)

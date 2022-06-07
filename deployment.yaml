@@ -1,42 +1,51 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: volunteer-assignment-platform-user-integration
+  name: vap-candidates
+  labels:
+    app: vap-candidates
 spec:
   selector:
     matchLabels:
-      app: vap-users
+      lbtype: external
   replicas: 1
   template:
     metadata:
       labels:
-        app: vap-users
+        lbtype: external
+        app: vap-candidates
     spec:
+      imagePullSecrets: 
+        - name: registry-credentials
       containers:
-      - name: vap-users
-        image: narminsh/vapusers1:amd84
+      - name: vap-candidates
+        image: registry.gitlab.com/kibrit/p7362/volunteer-assignment-platform/volunteer-assignment-platform-user-integration
         resources:
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
           limits:
-            memory: "512Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 80
-      
-      
-        
+            memory: "1024Mi"
+            cpu: "900m"
+        env:
+        - name: POSTGRES_USER
+          value: "vapadmin"
+        - name: POSTGRES_PASSWORD
+          value: "DB.4.Vols"
+        - name:  POSTGRES_DB
+          value: "vap"
+        - name:  POSTGRES_HOST
+          value: "vap-db.postgres.database.azure.com"
+        - name:  POSTGRES_PORT
+          value: "5432"
+       
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: vap-users-service
+  name: vap-candidates  
 spec:
+  type: ClusterIP
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-  type: LoadBalancer
+  - port: 8001
+    targetPort: 8001
   selector:
-    app: vap-users
+    app: vap-candidates

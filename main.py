@@ -698,7 +698,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                         single_where_statement += f"{lan} {operator} '{val}'"
                         if index_lan != len(unique_languages)-1:
                             single_where_statement += " or "
-                        if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
+                        if index_req == len(unique_languages)-1 and index != len(filter["value"])-1:
                             single_where_statement += " or "
                 
                 if requirement == "language_fluency_level":
@@ -707,7 +707,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                         single_where_statement += f"{fluency} {operator} '{val}'"
                         if index_fluency != len(unique_fluency_levels)-1:
                             single_where_statement += " or "
-                        if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
+                        if index_req == len(unique_fluency_levels)-1 and index != len(filter["value"])-1:
                             single_where_statement += " or "
                 
                 if requirement != "skill" and requirement != "language" and requirement != "language_fluency_level":

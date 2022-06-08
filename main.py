@@ -16,6 +16,7 @@ from users.crud import get_user, get_users
 from users import models
 from fastapi.responses import FileResponse
 from fastapi import APIRouter
+from sqlalchemy.sql import text
 
 
 URL_PREFIX = os.getenv('URL_PREFIX')
@@ -674,6 +675,10 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             "equal":"=",
             "not equal": "!=",
             "contains": "ILIKE",
+            ">": ">",
+            "<": "<",
+            ">=": ">=",
+            "<=": "<="
         }
 
         if filter["value"] == [] and filter["operator"] == "equal":
@@ -1124,6 +1129,53 @@ def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
     histories = db.query(models.Histories).filter(models.Histories.user_id == candidate_id).all()
     print(len(histories), "user-histories")
     return histories
+
+
+
+# @prefix_router.post('/report')
+# def reporting(report_list: dict, db: Session = Depends(get_db)):
+#     print(report_list)
+#     role_columns = report_list["role_columns"]
+#     vol_columns = report_list["vol_columns"]
+#     role_filters = report_list["role_filters"]
+#     vol_filters = report_list["vol_filters"]
+#     print(role_columns, vol_columns, role_filters, vol_filters, "aqaqaqaqaqaqaqaqaqaqaq")
+
+#     # with engine.connect() as con:
+
+#     #     rs = con.execute('SELECT * FROM role_offers where location_id=41')
+
+#     #     for row in rs:
+#     #         print(row.keys())
+
+#     sql = 'select * from role_offers where location_id=41'
+
+#     rows = engine.execute(text(sql))
+#     users = {}
+#     columns = None
+#     for row in rows:
+#         if columns is None:
+#             print('nisbdcuhsbhusdbc')
+#             columns = row.keys()
+#         users += dict(zip(columns, row))
+#     print(users)
+
+
+
+
+
+
+    # users = db.query(models.Volunteers).from_statement(
+    # text(f"""SELECT * From role_offers ro FULL JOIN  functional_area_types fat on 
+    # ro.functional_area_type_id = fat.id FULL JOIN functional_areas fa 
+    # on ro.functional_area_id = fa.id FULL JOIN job_titles jt on 
+    # ro.job_title_id = jt.id FULL JOIN locations loc on ro.location_id = loc.id 
+    # FULL JOIN volunteers on volunteers.role_offer_id = ro.id;""")).all()
+
+    # print(len(users), 'matched users count in reporting')
+
+
+
 
 
 app.include_router(prefix_router)

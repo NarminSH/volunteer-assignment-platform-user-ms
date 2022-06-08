@@ -652,7 +652,7 @@ def read_volunteers(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
 
 
 
-@prefix_router.get('/volunteers/(user_id)')
+@prefix_router.get('/volunteers/{user_id}')
 def read_volunteer(user_id: int, db: Session = Depends(get_db)):
     user = get_user(db=db, user_id=user_id)
     return user    
@@ -1119,9 +1119,10 @@ def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
 
 
 
-@prefix_router.get('/user-history/(candidate_id)')
+@prefix_router.get('/user-history/{candidate_id}')
 def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
     histories = db.query(models.Histories).filter(models.Histories.user_id == candidate_id).all()
+    print(len(histories), "user-histories")
     return histories
 
 

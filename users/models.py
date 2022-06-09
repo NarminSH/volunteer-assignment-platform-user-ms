@@ -114,4 +114,5 @@ class Histories(Base):
     user_id = Column(Integer)
     status = Column(String)
     role_offer_id = Column(String)
+    recorded_by = Column(String)
     created_at = Column(DateTime, default=datetime.now())

@@ -1279,5 +1279,6 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
 
 app.include_router(prefix_router)
 
+
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8001)

@@ -680,7 +680,6 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             ">=": ">=",
             "<=": "<="
         }
-
         if filter["value"] == [] and filter["operator"] == "equal":
             final_where_statement += f"({requirement} IS NULL)"
 
@@ -734,11 +733,10 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     
     print(final_where_statement, "finaq request to be executed")
 
-    # fin_req1 = "where {final_where_statement}".format(final_where_statement=final_where_statement if final_where_statement != [] else "she")
-    # print(fin_req1)
+    fin_req = f"WHERE {final_where_statement}" if final_where_statement != "" else ""
 
     users = db.query(models.Volunteers).from_statement(
-    text(f"""SELECT * from volunteers where {final_where_statement};""")).all()
+    text(f"""SELECT * from volunteers {fin_req};""")).all()
     print(len(users), 'matched users count')
 
     response = {
@@ -887,12 +885,6 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "created_at": datetime.now()
                 }
                 saved_users.append(new_user)
-                # if len(saved_users) == 100:
-                #     print(datetime.now(), "saving 100 user")
-                #     db.bulk_insert_mappings(models.Volunteers, saved_users)
-                #     print(datetime.now(), 'before committing 100 user')
-                #     db.commit()
-                #     print(datetime.now(), 'finished saving 100 user')
             else:
                 update_user = {
                 "candidate_id": candidate_id,
@@ -989,11 +981,11 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 }
                 updated_users.append(update_user)
         if saved_users != []:
+            print(len(saved_users), "length of saved users before bulk saving")
             print(datetime.now(), "saving")
             db.bulk_insert_mappings(models.Volunteers, saved_users)
-            print(datetime.now())
+            print(datetime.now(), 'before committing saved users')
             db.commit()
-            print(datetime.now())
         if updated_users != []:
             print("updated users")
             print(datetime.now())
@@ -1027,7 +1019,6 @@ def record_history(db: Session = Depends(get_db)):
                     descending = db.query(models.Histories).filter(models.Histories.user_id == user.candidate_id).order_by(models.Histories.id.desc())
                     last_item = descending.first()
                     if user.status != last_item.status:
-                        print(user.status, last_item.status)
                         existing_candidate_ids.append(user.candidate_id)
                         updated_user = {
                             "user_id": user.candidate_id,
@@ -1132,48 +1123,156 @@ def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
 
 
 
-# @prefix_router.post('/report')
-# def reporting(report_list: dict, db: Session = Depends(get_db)):
-#     print(report_list)
-#     role_columns = report_list["role_columns"]
-#     vol_columns = report_list["vol_columns"]
-#     role_filters = report_list["role_filters"]
-#     vol_filters = report_list["vol_filters"]
-#     print(role_columns, vol_columns, role_filters, vol_filters, "aqaqaqaqaqaqaqaqaqaqaq")
+@prefix_router.post('/report')
+def reporting(report_list: dict, db: Session = Depends(get_db)):
+    template_name = report_list["template_name"]
+    ro_columns = report_list["role_columns"]
+    vol_columns = report_list["vol_columns"]
+    ro_filters = report_list["role_filters"]
+    vol_filters = report_list["vol_filters"]
 
-#     # with engine.connect() as con:
+    volunteer_columns = []
+    role_columns = []
+    all_cols = []
+    final_statement = ""
 
-#     #     rs = con.execute('SELECT * FROM role_offers where location_id=41')
+    operators_dict = {
+            "equal":"=",
+            "not equal": "!=",
+            "contains": "ILIKE",
+            ">": ">",
+            "<": "<",
+            ">=": ">=",
+            "<=": "<="
+        }
 
-#     #     for row in rs:
-#     #         print(row.keys())
+    for vol in vol_columns:
+        vs = f"volunteers.{vol}"
+        volunteer_columns.append(vs)
 
-#     sql = 'select * from role_offers where location_id=41'
+    for role in ro_columns:
+        rl = f"{role}.name"
+        role_columns.append(rl)
 
-#     rows = engine.execute(text(sql))
-#     users = {}
-#     columns = None
-#     for row in rows:
-#         if columns is None:
-#             print('nisbdcuhsbhusdbc')
-#             columns = row.keys()
-#         users += dict(zip(columns, row))
-#     print(users)
+    all_cols = volunteer_columns + role_columns
+    print(all_cols)
 
-
-
-
+    select_statement = ""
+    final_where_statement = ""
+    for col_index, col_value in enumerate(all_cols):
+        select_statement += col_value
+        if col_index != len(all_cols)-1:
+            select_statement += ", "
 
 
-    # users = db.query(models.Volunteers).from_statement(
-    # text(f"""SELECT * From role_offers ro FULL JOIN  functional_area_types fat on 
-    # ro.functional_area_type_id = fat.id FULL JOIN functional_areas fa 
-    # on ro.functional_area_id = fa.id FULL JOIN job_titles jt on 
-    # ro.job_title_id = jt.id FULL JOIN locations loc on ro.location_id = loc.id 
-    # FULL JOIN volunteers on volunteers.role_offer_id = ro.id;""")).all()
+    for vol_index, vol_filter in enumerate(vol_filters):
+        requirement = vol_filter["requirement_name"]
 
-    # print(len(users), 'matched users count in reporting')
+        if vol_filter["value"] == [] and vol_filter["operator"] == "equal":
+            final_where_statement += f"(volunteers.{requirement} IS NULL)"
 
+        if vol_filter["value"] == [] and vol_filter["operator"] == "not equal":
+            final_where_statement += f"(volunteers.{requirement} IS NOT NULL)"
+
+        if vol_filter["value"] != []:
+            single_where_statement = ""
+            single_where_statement += "("
+            for index, val in enumerate(vol_filter["value"]):
+                operator = operators_dict[vol_filter["operator"]]
+                if "don't" in val:
+                    val = val.replace("don't", "don''t")
+                
+                if requirement == "skill":
+                    unique_skills = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]
+                    for index_req, req in enumerate(unique_skills):
+                        single_where_statement += f"volunteers.{req} {operator} '{val}' "
+                        if index_req != len(unique_skills)-1:
+                            single_where_statement += " or "
+                        if index_req == len(unique_skills)-1 and index != len(vol_filter["value"])-1:
+                            single_where_statement += " or "
+
+                if requirement == "language":
+                    unique_languages = ["additional_language_1", "additional_language_2", "additional_language_3", "additional_language_4"]
+                    for index_lan, lan in enumerate(unique_languages):
+                        single_where_statement += f"volunteers.{lan} {operator} '{val}'"
+                        if index_lan != len(unique_languages)-1:
+                            single_where_statement += " or "
+                        if index_lan == len(unique_languages)-1 and index != len(vol_filter["value"])-1:
+                            single_where_statement += " or "
+                
+                if requirement == "language_fluency_level":
+                    unique_fluency_levels = ["additional_language_1_fluency_level", "additional_language_2_fluency_level", "additional_language_3_fluency_level", "additional_language_4_fluency_level"]
+                    for index_fluency, fluency in enumerate(unique_fluency_levels):
+                        single_where_statement += f"volunteers.{fluency} {operator} '{val}'"
+                        if index_fluency != len(unique_fluency_levels)-1:
+                            single_where_statement += " or "
+                        if index_fluency == len(unique_fluency_levels)-1 and index != len(vol_filter["value"])-1:
+                            single_where_statement += " or "
+                
+                if requirement != "skill" and requirement != "language" and requirement != "language_fluency_level":
+                    single_where_statement += f"volunteers.{requirement} {operator} '{val}'"
+                    if index != len(vol_filter["value"])-1:
+                        single_where_statement += " or "
+            single_where_statement += ")"
+            final_where_statement += single_where_statement
+
+        if vol_index != len(vol_filters)-1:
+            final_where_statement += " and "
+
+
+    if vol_filters != [] and ro_filters != []:
+        final_where_statement += " and "
+
+    for role_index, role_filter in enumerate(ro_filters):
+
+        requirement = role_filter["requirement_name"]
+
+        if role_filter["value"] == [] and role_filter["operator"] == "equal":
+            final_where_statement += f"({requirement}.name IS NULL)"
+
+        if role_filter["value"] == [] and role_filter["operator"] == "not equal":
+            final_where_statement += f"({requirement}.name IS NOT NULL)"
+
+        if role_filter["value"] != []:
+            single_where_statement = ""
+            single_where_statement += "("
+            for index, val in enumerate(role_filter["value"]):
+                operator = operators_dict[role_filter["operator"]]
+                if "don't" in val:
+                    val = val.replace("don't", "don''t")
+                                
+                single_where_statement += f"{requirement}.name {operator} '{val}'"
+                if index != len(role_filter["value"])-1:
+                    single_where_statement += " or "
+            single_where_statement += ")"
+            final_where_statement += single_where_statement
+
+        if role_index != len(ro_filters)-1:
+            final_where_statement += " and "
+
+    
+    fin_req = f"WHERE {final_where_statement}" if final_where_statement != "" else ""
+
+    join_statement = " From role_offers ro FULL JOIN  functional_area_types Entity on ro.functional_area_type_id = Entity.id FULL JOIN functional_areas Functional_Area on ro.functional_area_id = Functional_Area.id FULL JOIN job_titles Job_Title on ro.job_title_id = Job_Title.id FULL JOIN locations Location on ro.location_id = Location.id FULL JOIN volunteers on volunteers.role_offer_id = ro.id "
+    final_statement = f"{select_statement}{join_statement}{fin_req}"
+    print(final_statement, 'final statement in reporting')
+        
+    rows = engine.execute(text(final_statement))
+    reported_users = []
+    for row in rows:
+        reported_users.append(row)
+    
+    data = pd.DataFrame(reported_users, columns=all_cols)
+    data.to_excel(f'files/{template_name}.xlsx', sheet_name='sheet1', index=False)
+
+    file_exists = os.path.exists(f'files/{template_name}.xlsx')
+    
+    if file_exists:
+        file_path = f'files/{template_name}.xlsx'
+        print('file exists, returning export file in export-volunteers')
+        return FileResponse(file_path, filename=f"{template_name}.xlsx", media_type="xlsx")
+    return { "statusCode": status.HTTP_404_NOT_FOUND, "value": "notexist"}
+   
 
 
 

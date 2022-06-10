@@ -639,6 +639,11 @@ def read_fields():
             "value_options": ["Assigned", "Pending", "Accepted", "Confirmed", "Complete", 
             "Declined", "Removed", "Expired", "Waitlist Offered", "Waitlist Accepted", 
             "Waitlist Declined", "Pre-assigned", "Not Approved", "Waitlist Assigned"]
+        },
+    'partner_code': {
+            "type": "input",
+            "value_type": "int",
+            "value_options": []
         }
     }
     return field_names_obj
@@ -748,8 +753,10 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
 
 
 @prefix_router.post('/import-users-data')
-def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), db: Session = Depends(get_db)):
-    background_task.add_task(check_role, db=db, background_task=background_task)
+def import_data(background_task: BackgroundTasks, email: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
+    background_task.add_task(check_role, db=db)
+    background_task.add_task(record_history, db=db, email=email)
+    
     file_name = file.filename
     print(file_name)
 
@@ -882,6 +889,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "status": key["Role Offer Status"],
                 "municipality_address" : key["Municipality Address"],
                 "age": key["age"],
+                "partner_code": key["Partner / Affiliation Code"],
                 "created_at": datetime.now()
                 }
                 saved_users.append(new_user)
@@ -977,6 +985,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
                 "status": key["Role Offer Status"],
                 "municipality_address" : key["Municipality Address"],
                 "age": key["age"],
+                "partner_code": key["Partner / Affiliation Code"],
                 "updated_at": datetime.now()
                 }
                 updated_users.append(update_user)
@@ -1000,7 +1009,7 @@ def import_data(background_task: BackgroundTasks,file: UploadFile = File(...), d
 
 
 @prefix_router.get('/record-history')
-def record_history(db: Session = Depends(get_db)):
+def record_history(email: str, db: Session = Depends(get_db)):
     updated_users = []
     users_db = db.query(models.Volunteers).all()
     history_db = db.query(models.Histories).all() 
@@ -1024,6 +1033,7 @@ def record_history(db: Session = Depends(get_db)):
                             "user_id": user.candidate_id,
                             "status": user.status,
                             "role_offer_id": user.role_offer_id,
+                            "recorded_by": email,
                             "created_at": datetime.now()
                         }
                         updated_users.append(updated_user)
@@ -1032,6 +1042,7 @@ def record_history(db: Session = Depends(get_db)):
             "user_id": user.candidate_id,
             "status": user.status,
             "role_offer_id": user.role_offer_id,
+            "recorded_by": email,
             "created_at": datetime.now()
             }
             new_users.append(new_user)
@@ -1086,11 +1097,10 @@ def export_volunteers(db: Session = Depends(get_db)):
 
 
 @prefix_router.get('/check-role')
-def check_role(background_task: BackgroundTasks, db: Session = Depends(get_db)):
+def check_role(db: Session = Depends(get_db)):
 
     print('inside check role func')
 
-    background_task.add_task(record_history, db=db)
 
     updated_users = []
     all_users = db.query(models.Volunteers).all()

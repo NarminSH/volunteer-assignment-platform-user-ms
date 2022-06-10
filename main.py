@@ -240,6 +240,11 @@ def read_fields():
     "Greek", "Icelandic", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Serbian", "Spanish", 
     "Swedish", "Other (Please specify in the text box below)"]
         },
+        "language_fluency_level": {
+            "type": "select",
+            "value_type": "string",
+            "value_options": ["Intermediate", "Beginner"]
+        },
     "additional_language_1": {
             "type": "select",
             "value_type": "string",
@@ -685,10 +690,26 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             ">=": ">=",
             "<=": "<="
         }
-        if filter["value"] == [] and filter["operator"] == "equal":
+
+        if filter["value"] == [] and filter["operator"] == "equal" and requirement == "skill":
+            final_where_statement += f"((skill_1 IS NULL) or (skill_2 IS NULL) or (skill_3 IS NULL) or (skill_4 IS NULL) or (skill_5 IS NULL) or (skill_6 IS NULL))"
+
+        if filter["value"] == [] and filter["operator"] ==  "not equal" and requirement == "skill": 
+            final_where_statement += f"((skill_1 IS NOT NULL) or (skill_2 IS NOT NULL) or (skill_3 IS NOT NULL) or (skill_4 IS NOT NULL) or (skill_5 IS NOT NULL) or (skill_6 IS NOT NULL))"
+
+        if filter["value"] == [] and filter["operator"] == "equal" and requirement == "language":
+            final_where_statement += f"((additional_language_1 IS NULL) or (additional_language_2 IS NULL) or (additional_language_3 IS NULL) or (additional_language_4 IS NULL))"
+
+        if filter["value"] == [] and filter["operator"] ==  "not equal" and requirement == "language": 
+            final_where_statement += f"((additional_language_1 IS NOT NULL) or (additional_language_2 IS NOT NULL) or (additional_language_3 IS NOT NULL) or (additional_language_4 IS NOT NULL))"
+        
+        if filter["value"] == [] and filter["operator"] ==  "not equal" and requirement == "language_fluency_level": 
+            final_where_statement += f"((additional_language_1_fluency_level IS NOT NULL) or (additional_language_2_fluency_level IS NOT NULL) or (additional_language_3_fluency_level IS NOT NULL) or (additional_language_4_fluency_level IS NOT NULL))"
+
+        if filter["value"] == [] and filter["operator"] == "equal" and (requirement != "skill" and requirement != "language" and requirement != "language_fluency_level"):
             final_where_statement += f"({requirement} IS NULL)"
 
-        if filter["value"] == [] and filter["operator"] == "not equal":
+        if filter["value"] == [] and filter["operator"] == "not equal" and (requirement != "skill" and requirement != "language" and requirement != "language_fluency_level"):
             final_where_statement += f"({requirement} IS NOT NULL)"
 
         if filter["value"] != []:

@@ -1135,6 +1135,7 @@ def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
 
 @prefix_router.post('/report')
 def reporting(report_list: dict, db: Session = Depends(get_db)):
+    print(report_list, 'report list from front')
     template_name = report_list["template_name"]
     ro_columns = report_list["role_columns"]
     vol_columns = report_list["vol_columns"]

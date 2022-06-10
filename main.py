@@ -1047,7 +1047,6 @@ def record_history(email: str, db: Session = Depends(get_db)):
             "created_at": datetime.now()
             }
             new_users.append(new_user)
-            print('dedected new user to insert history table')
     if new_users != []:
         print('new users in saving record-history', len(new_users))
         db.bulk_insert_mappings(models.Histories, new_users)

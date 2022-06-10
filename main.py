@@ -752,8 +752,9 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     
 
 
-@prefix_router.post('/import-users-data')
-def import_data(background_task: BackgroundTasks, email: str, file: UploadFile = File(...), db: Session = Depends(get_db)):
+@prefix_router.post('/import-users-data/')
+def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = File(...), db: Session = Depends(get_db)):
+
     background_task.add_task(check_role, db=db)
     background_task.add_task(record_history, db=db, email=email)
     
@@ -789,9 +790,9 @@ def import_data(background_task: BackgroundTasks, email: str, file: UploadFile =
     print(datetime.now(), 'before all')
 
     all_candidate_ids_in_db = db.scalars(db.query(models.Volunteers.candidate_id)).all()
+    print(len(all_candidate_ids_in_db), 'all candidates in db')
 
     print(datetime.now(), 'after all')
- 
     saved_users = []
     updated_users = []    
     if duplicate_ids_excel == []: 

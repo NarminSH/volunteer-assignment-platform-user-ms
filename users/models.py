@@ -100,7 +100,7 @@ class Volunteers(Base):
     why_rejected_candidate = Column(String)
     role_offer_id = Column(Integer)
     status = Column(String)
-    partner_code = Column(Integer)
+    partner_code = Column(String)
     created_at = Column(DateTime)
     is_deleted = Column(Boolean, default=False)
     deleted_at = Column(DateTime)

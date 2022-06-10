@@ -1157,7 +1157,7 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
     all_cols = volunteer_columns + role_columns
     print(all_cols)
 
-    select_statement = ""
+    select_statement = "SELECT "
     final_where_statement = ""
     for col_index, col_value in enumerate(all_cols):
         select_statement += col_value

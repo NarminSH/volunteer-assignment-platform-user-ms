@@ -717,8 +717,8 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             single_where_statement += "("
             for index, val in enumerate(filter["value"]):
                 operator = operators_dict[filter["operator"]]
-                if "don't" in val:
-                    val = val.replace("don't", "don''t")
+                if "'" in val:
+                    val = val.replace("'", "''")
                 
                 if requirement == "skill":
                     unique_skills = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]

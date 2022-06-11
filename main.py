@@ -1101,7 +1101,6 @@ def export_volunteers(db: Session = Depends(get_db)):
     for user in users:
         print(user.status)
         if user.status is not None:
-            print(user.candidate_id, user.status, user.role_offer_id, "All users in export data")
             ids.append(user.candidate_id)
             statuses.append(user.status)
             role_offers.append(user.role_offer_id)

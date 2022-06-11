@@ -706,6 +706,9 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
         if filter["value"] == [] and filter["operator"] ==  "not equal" and requirement == "language_fluency_level": 
             final_where_statement += f"((additional_language_1_fluency_level IS NOT NULL) or (additional_language_2_fluency_level IS NOT NULL) or (additional_language_3_fluency_level IS NOT NULL) or (additional_language_4_fluency_level IS NOT NULL))"
 
+        if filter["value"] == [] and filter["operator"] ==  "equal" and requirement == "language_fluency_level": 
+            final_where_statement += f"((additional_language_1_fluency_level IS NULL) or (additional_language_2_fluency_level IS NULL) or (additional_language_3_fluency_level IS NULL) or (additional_language_4_fluency_level IS NULL))"
+
         if filter["value"] == [] and filter["operator"] == "equal" and (requirement != "skill" and requirement != "language" and requirement != "language_fluency_level"):
             final_where_statement += f"({requirement} IS NULL)"
 
@@ -1200,6 +1203,24 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
     for vol_index, vol_filter in enumerate(vol_filters):
         requirement = vol_filter["requirement_name"]
 
+        if vol_filter["value"] == [] and vol_filter["operator"] == "equal" and requirement == "skill":
+            final_where_statement += f"((skill_1 IS NULL) or (skill_2 IS NULL) or (skill_3 IS NULL) or (skill_4 IS NULL) or (skill_5 IS NULL) or (skill_6 IS NULL))"
+
+        if vol_filter["value"] == [] and vol_filter["operator"] ==  "not equal" and requirement == "skill": 
+            final_where_statement += f"((skill_1 IS NOT NULL) or (skill_2 IS NOT NULL) or (skill_3 IS NOT NULL) or (skill_4 IS NOT NULL) or (skill_5 IS NOT NULL) or (skill_6 IS NOT NULL))"
+
+        if vol_filter["value"] == [] and vol_filter["operator"] == "equal" and requirement == "language":
+            final_where_statement += f"((additional_language_1 IS NULL) or (additional_language_2 IS NULL) or (additional_language_3 IS NULL) or (additional_language_4 IS NULL))"
+
+        if vol_filter["value"] == [] and vol_filter["operator"] ==  "not equal" and requirement == "language": 
+            final_where_statement += f"((additional_language_1 IS NOT NULL) or (additional_language_2 IS NOT NULL) or (additional_language_3 IS NOT NULL) or (additional_language_4 IS NOT NULL))"
+        
+        if vol_filter["value"] == [] and vol_filter["operator"] ==  "not equal" and requirement == "language_fluency_level": 
+            final_where_statement += f"((additional_language_1_fluency_level IS NOT NULL) or (additional_language_2_fluency_level IS NOT NULL) or (additional_language_3_fluency_level IS NOT NULL) or (additional_language_4_fluency_level IS NOT NULL))"
+            
+        if vol_filter["value"] == [] and vol_filter["operator"] ==  "equal" and requirement == "language_fluency_level": 
+            final_where_statement += f"((additional_language_1_fluency_level IS NULL) or (additional_language_2_fluency_level IS NULL) or (additional_language_3_fluency_level IS NULL) or (additional_language_4_fluency_level IS NULL))"
+
         if vol_filter["value"] == [] and vol_filter["operator"] == "equal":
             final_where_statement += f"(volunteers.{requirement} IS NULL)"
 
@@ -1270,8 +1291,8 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
             single_where_statement += "("
             for index, val in enumerate(role_filter["value"]):
                 operator = operators_dict[role_filter["operator"]]
-                if "don't" in val:
-                    val = val.replace("don't", "don''t")
+                if "'" in val:
+                    val = val.replace("'", "''")
                                 
                 single_where_statement += f"{requirement}.name {operator} '{val}'"
                 if index != len(role_filter["value"])-1:
@@ -1285,7 +1306,7 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
     
     fin_req = f"WHERE {final_where_statement}" if final_where_statement != "" else ""
 
-    join_statement = " From role_offers ro FULL JOIN  functional_area_types Entity on ro.functional_area_type_id = Entity.id FULL JOIN functional_areas Functional_Area on ro.functional_area_id = Functional_Area.id FULL JOIN job_titles Job_Title on ro.job_title_id = Job_Title.id FULL JOIN locations Location on ro.location_id = Location.id FULL JOIN volunteers on volunteers.role_offer_id = ro.id "
+    join_statement = " From role_offers ro FULL JOIN  functional_area_types Entity on ro.functional_area_type_id = Entity.id FULL JOIN functional_areas Functional_Area on ro.functional_area_id = Functional_Area.id FULL JOIN job_titles Job_Title on ro.job_title_id = Job_Title.id FULL JOIN locations Location on ro.location_id = Location.id FULL JOIN volunteers on volunteers.role_offer_id = ro.role_offer_id "
     final_statement = f"{select_statement}{join_statement}{fin_req}"
     print(final_statement, 'final statement in reporting')
         

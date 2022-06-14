@@ -1305,7 +1305,7 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
     
     fin_req = f"WHERE {final_where_statement}" if final_where_statement != "" else ""
 
-    join_statement = " From role_offers ro FULL JOIN  functional_area_types Entity on ro.functional_area_type_id = Entity.id FULL JOIN functional_areas Functional_Area on ro.functional_area_id = Functional_Area.id FULL JOIN job_titles Job_Title on ro.job_title_id = Job_Title.id FULL JOIN locations Location on ro.location_id = Location.id FULL JOIN volunteers on volunteers.role_offer_id = ro.role_offer_id "
+    join_statement = " From role_offers ro INNER JOIN  functional_area_types Entity on ro.functional_area_type_id = Entity.id INNER JOIN functional_areas Functional_Area on ro.functional_area_id = Functional_Area.id INNER JOIN job_titles Job_Title on ro.job_title_id = Job_Title.id INNER JOIN locations Location on ro.location_id = Location.id INNER JOIN volunteers on volunteers.role_offer_id = ro.role_offer_id "
     final_statement = f"{select_statement}{join_statement}{fin_req}"
     print(final_statement, 'final statement in reporting')
         

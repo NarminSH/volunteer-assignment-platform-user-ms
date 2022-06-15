@@ -243,7 +243,7 @@ def read_fields():
         "language_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value_options": ["Intermediate", "Beginner"]
+            "value_options": ["Native", "Fluent", "Intermediate", "Beginner",]
         },
     "additional_language_1": {
             "type": "select",
@@ -255,7 +255,7 @@ def read_fields():
     "additional_language_1_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value_options": ["Intermediate", "Beginner"]
+            "value_options": ["Native", "Fluent", "Intermediate", "Beginner",]
         },
     "additional_language_2": {
             "type": "select",
@@ -267,7 +267,7 @@ def read_fields():
     "additional_language_2_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value_options": ["Intermediate", "Beginner"]
+            "value_options": ["Native", "Fluent", "Intermediate", "Beginner",]
         },
     "additional_language_3": {
             "type": "select",
@@ -279,7 +279,7 @@ def read_fields():
     "additional_language_3_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value_options": ["Intermediate", "Beginner"]
+            "value_options": ["Native", "Fluent", "Intermediate", "Beginner",]
         },
     "additional_language_4":{
             "type": "select",
@@ -291,7 +291,7 @@ def read_fields():
     "additional_language_4_fluency_level": {
             "type": "select",
             "value_type": "string",
-            "value_options": ["Intermediate", "Beginner"]
+            "value_options": ["Native", "Fluent", "Intermediate", "Beginner",]
         },
     "other_languages": {
             "type": "input",

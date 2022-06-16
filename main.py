@@ -140,7 +140,7 @@ def read_fields():
     "qatari_driving_lisence": {
             "type": "select",
             "value_type": "string",
-            "value_options": ["Yes", "No", " "]
+            "value_options": ["Yes", "No"]
         },
     "driving_license_type": {
             "type": "select",
@@ -425,7 +425,7 @@ def read_fields():
     'are_you_interested_in_a_leadership_role': {
             "type": "select",
             "value_type": "string",
-            "value_options": ["Yes", "No", " "]
+            "value_options": ["Yes", "No"]
         },
     'leadership_experience': {
             "type": "input",
@@ -445,7 +445,7 @@ def read_fields():
     'cast_yes_no' : {
             "type": "select",
             "value_type": "string",
-            "value_options": ["Yes", "No", " "]
+            "value_options": ["Yes", "No"]
         },
     'cast_options': {
             "type": "select",
@@ -584,8 +584,12 @@ def read_fields():
             "value_type": "string",
             "value_options": ["Understands need to plan schedule", "Already planned leave", 
     "Requires release letter from employer", "States will attend shift after work", 
-    "Does not appear to understand shift requirement/commitment"],
-    'experience_recommendation': ["N/A", "Access Management", "Accessibility", 
+    "Does not appear to understand shift requirement/commitment"]},
+
+    'experience_recommendation': {
+        "type": "select",
+        "value_type": "string",
+        "value_options": ["N/A", "Access Management", "Accessibility", 
     "Accreditation", "Arrivals and Departures", "Catering", "Cleaning & Waste", 
     "Communications", "Competition Management", "Event Promotion", "Event Transport", 
     "Fan Zones", "Guest Operations", "Health & Safety", "Hospitality", "IT", "Language Services",
@@ -601,7 +605,6 @@ def read_fields():
     "Customer Service", "Decision Making", "Empathy", "Multitasking", "Positive Attitude", "Self-Motivated", 
     "Time Management", "Patience", "Work ethic", "Conflict Resolution", None]
         },
-
     'technical_skills': {
             "type": "select",
             "value_type": "string",

@@ -1047,8 +1047,6 @@ def record_history(email: str, db: Session = Depends(get_db)):
 
     
     print('record-history before for loop')
-    print(len(users_db))
-    print(len(history_db))
     for user in users_db:
         if user.candidate_id in history_db_ids:
             for history in history_db:
@@ -1102,7 +1100,6 @@ def export_volunteers(db: Session = Depends(get_db)):
     text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
 
     for user in users:
-        print(user.status)
         if user.status is not None:
             ids.append(user.candidate_id)
             statuses.append(user.status)
@@ -1132,7 +1129,6 @@ def check_role(db: Session = Depends(get_db)):
     all_users = db.query(models.Volunteers).all()
     for user in all_users:
         if user.status is None and user.role_offer_id is not None:
-            print(user.candidate_id, 'candidate id in check role')
             update_user = {
             "candidate_id": user.candidate_id,
             "role_offer_id": None,

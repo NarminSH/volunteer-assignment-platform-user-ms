@@ -674,14 +674,13 @@ def read_volunteer(user_id: int, db: Session = Depends(get_db)):
 
 @prefix_router.post('/filter-volunteers')
 def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 10, db: Session = Depends(get_db)):
-    print(filter_list)
+    print(filter_list, "filter list from front in filter volunteers")
 
     start = (page_number-1) * page_size
     end = start + page_size
 
     final_where_statement = ""
     for filter_index, filter in enumerate(filter_list):
-        print(filter_index, filter)
         requirement = filter["requirement_name"]
         
         operators_dict = {
@@ -763,7 +762,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
         if filter_index != len(filter_list)-1:
             final_where_statement += " and "  
     
-    print(final_where_statement, "finaq request to be executed")
+    print(final_where_statement, "finaq where request to be executed in filtering volunteers")
 
     fin_req = f"WHERE {final_where_statement}" if final_where_statement != "" else ""
 
@@ -786,24 +785,22 @@ def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = 
     background_task.add_task(record_history, db=db, email=email)
     
     file_name = file.filename
-    print(file_name)
 
     all_users_in_excel = []
     with open(f'{file.filename}', "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     print("got1 here")
-    print(datetime.now())
+    print(datetime.now(), "import user before read excel")
     data = pd.read_excel(file_name, index_col=None)
     volunteer_data = data.astype(object).replace(np.nan, None)
     print('finished replacing none to null values in import', datetime.now())
 
-    print("got2 here")
     for name in volunteer_data.iterrows():  
         new_user_from_excel = name[1].to_dict()
         all_users_in_excel.append(new_user_from_excel)
     
-    print(datetime.now(), "for candidate ids")
+    print(datetime.now(), "before for candidate ids")
     all_ids_excel = []
     duplicate_ids_excel = []
     for i in all_users_in_excel:
@@ -814,12 +811,12 @@ def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = 
             if id_value not in duplicate_ids_excel:
                 duplicate_ids_excel.append(id_value)
 
-    print(datetime.now(), 'before all')
+    print(datetime.now(), 'before all_candidate_ids_in_db')
 
     all_candidate_ids_in_db = db.scalars(db.query(models.Volunteers.candidate_id)).all()
-    print(len(all_candidate_ids_in_db), 'all candidates in db')
+    print(len(all_candidate_ids_in_db), 'all existing candidates in db')
 
-    print(datetime.now(), 'after all')
+    print(datetime.now(), 'after all_candidate_ids_in_db')
     saved_users = []
     updated_users = []    
     if duplicate_ids_excel == []: 
@@ -1019,18 +1016,18 @@ def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = 
                 updated_users.append(update_user)
         if saved_users != []:
             print(len(saved_users), "length of saved users before bulk saving")
-            print(datetime.now(), "saving")
+            print(datetime.now(), "saving users in import")
             db.bulk_insert_mappings(models.Volunteers, saved_users)
-            print(datetime.now(), 'before committing saved users')
+            print(datetime.now(), 'before committing saved users in import')
             db.commit()
         if updated_users != []:
             print("updated users")
             print(datetime.now())
             print(len(updated_users), "length of updated users before bulk updating")
             db.bulk_update_mappings(models.Volunteers, updated_users)
-            print(datetime.now(), "before committing updated users")
+            print(datetime.now(), "before committing updated users in import")
             db.commit()
-            print(datetime.now(), "saved updated users")
+            print(datetime.now(), "saved updated users in import")
     else:
         return { "statusCode": status.HTTP_400_BAD_REQUEST, "value": "DuplicateID", "message": duplicate_ids_excel}
 
@@ -1188,7 +1185,7 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
         role_columns.append(rl)
 
     all_cols = volunteer_columns + role_columns
-    print(all_cols)
+
 
     select_statement = "SELECT "
     final_where_statement = ""
@@ -1306,7 +1303,7 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
 
     join_statement = " From role_offers ro INNER JOIN  functional_area_types Entity on ro.functional_area_type_id = Entity.id INNER JOIN functional_areas Functional_Area on ro.functional_area_id = Functional_Area.id INNER JOIN job_titles Job_Title on ro.job_title_id = Job_Title.id INNER JOIN locations Location on ro.location_id = Location.id INNER JOIN volunteers on volunteers.role_offer_id = ro.role_offer_id "
     final_statement = f"{select_statement}{join_statement}{fin_req}"
-    print(final_statement, 'final statement in reporting')
+    print(final_statement, 'final statement in reporting users')
         
     rows = engine.execute(text(final_statement))
     reported_users = []

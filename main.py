@@ -732,32 +732,54 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                     for index_req, req in enumerate(unique_skills):
                         single_where_statement += f"{req} {operator} '{val}' "
                         if index_req != len(unique_skills)-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                         if index_req == len(unique_skills)-1 and index != len(filter["value"])-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
 
                 if requirement == "language":
                     unique_languages = ["additional_language_1", "additional_language_2", "additional_language_3", "additional_language_4"]
                     for index_lan, lan in enumerate(unique_languages):
                         single_where_statement += f"{lan} {operator} '{val}'"
                         if index_lan != len(unique_languages)-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                         if index_lan == len(unique_languages)-1 and index != len(filter["value"])-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                 
                 if requirement == "language_fluency_level":
                     unique_fluency_levels = ["additional_language_1_fluency_level", "additional_language_2_fluency_level", "additional_language_3_fluency_level", "additional_language_4_fluency_level"]
                     for index_fluency, fluency in enumerate(unique_fluency_levels):
                         single_where_statement += f"{fluency} {operator} '{val}'"
                         if index_fluency != len(unique_fluency_levels)-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                         if index_fluency == len(unique_fluency_levels)-1 and index != len(filter["value"])-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                 
                 if requirement != "skill" and requirement != "language" and requirement != "language_fluency_level":
                     single_where_statement += f"{requirement} {operator} '{val}'"
                     if index != len(filter["value"])-1:
-                        single_where_statement += " or "
+                        if operator != "IS DISTINCT FROM":
+                            single_where_statement += " or "
+                        else:
+                            single_where_statement += " and "
+                        # single_where_statement += " or "
             single_where_statement += ")"
             final_where_statement += single_where_statement
 
@@ -767,6 +789,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
     print("/candidates/filter-volunteers. final_where_statement = ", final_where_statement )
 
     fin_req = f"WHERE {final_where_statement}" if final_where_statement != "" else ""
+
 
     users = db.query(models.Volunteers).from_statement(
     text(f"""SELECT * from volunteers {fin_req};""")).all()
@@ -1229,32 +1252,53 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
                     for index_req, req in enumerate(unique_skills):
                         single_where_statement += f"volunteers.{req} {operator} '{val}' "
                         if index_req != len(unique_skills)-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                         if index_req == len(unique_skills)-1 and index != len(vol_filter["value"])-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
 
                 if requirement == "language":
                     unique_languages = ["additional_language_1", "additional_language_2", "additional_language_3", "additional_language_4"]
                     for index_lan, lan in enumerate(unique_languages):
                         single_where_statement += f"volunteers.{lan} {operator} '{val}'"
                         if index_lan != len(unique_languages)-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                         if index_lan == len(unique_languages)-1 and index != len(vol_filter["value"])-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                 
                 if requirement == "language_fluency_level":
                     unique_fluency_levels = ["additional_language_1_fluency_level", "additional_language_2_fluency_level", "additional_language_3_fluency_level", "additional_language_4_fluency_level"]
                     for index_fluency, fluency in enumerate(unique_fluency_levels):
                         single_where_statement += f"volunteers.{fluency} {operator} '{val}'"
                         if index_fluency != len(unique_fluency_levels)-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                         if index_fluency == len(unique_fluency_levels)-1 and index != len(vol_filter["value"])-1:
-                            single_where_statement += " or "
+                            if operator != "IS DISTINCT FROM":
+                                single_where_statement += " or "
+                            else:
+                                single_where_statement += " and "
                 
                 if requirement != "skill" and requirement != "language" and requirement != "language_fluency_level":
                     single_where_statement += f"volunteers.{requirement} {operator} '{val}'"
                     if index != len(vol_filter["value"])-1:
-                        single_where_statement += " or "
+                        if operator != "IS DISTINCT FROM":
+                            single_where_statement += " or "
+                        else:
+                            single_where_statement += " and "
             single_where_statement += ")"
             final_where_statement += single_where_statement
 
@@ -1280,12 +1324,17 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
             single_where_statement += "("
             for index, val in enumerate(role_filter["value"]):
                 operator = operators_dict[role_filter["operator"]]
+                if operator == "ILIKE":
+                    val = f"%{val}%"
                 if "'" in val:
                     val = val.replace("'", "''")
                                 
                 single_where_statement += f"{requirement}.name {operator} '{val}'"
                 if index != len(role_filter["value"])-1:
-                    single_where_statement += " or "
+                    if operator != "IS DISTINCT FROM":
+                        single_where_statement += " or "
+                    else:
+                        single_where_statement += " and "
             single_where_statement += ")"
             final_where_statement += single_where_statement
 

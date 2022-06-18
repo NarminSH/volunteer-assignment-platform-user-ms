@@ -1097,10 +1097,9 @@ def export_volunteers(db: Session = Depends(get_db)):
     text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
 
     for user in users:
-        if user.status is not None:
-            ids.append(user.candidate_id)
-            statuses.append(user.status)
-            role_offers.append(user.role_offer_id)
+        ids.append(user.candidate_id)
+        statuses.append(user.status)
+        role_offers.append(user.role_offer_id)
 
     data = pd.DataFrame({col1:ids,col2:statuses,col3:role_offers})
 

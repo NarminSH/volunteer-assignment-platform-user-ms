@@ -674,7 +674,7 @@ def read_volunteer(user_id: int, db: Session = Depends(get_db)):
 
 @prefix_router.post('/filter-volunteers')
 def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 10, db: Session = Depends(get_db)):
-    print(filter_list, "filter list from front in filter volunteers")
+    print("/candidates/filter-volunteers. filter_list = ", filter_list)
 
     start = (page_number-1) * page_size
     end = start + page_size
@@ -762,13 +762,13 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
         if filter_index != len(filter_list)-1:
             final_where_statement += " and "  
     
-    print(final_where_statement, "finaq where request to be executed in filtering volunteers")
+    print("/candidates/filter-volunteers. final_where_statement = ", final_where_statement )
 
     fin_req = f"WHERE {final_where_statement}" if final_where_statement != "" else ""
 
     users = db.query(models.Volunteers).from_statement(
     text(f"""SELECT * from volunteers {fin_req};""")).all()
-    print(len(users), 'matched users count')
+    print('/candidates/filter-volunteers. users count = ', len(users))
 
     response = {
         "data": users[start:end],
@@ -790,17 +790,16 @@ def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = 
     with open(f'{file.filename}', "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    print("got1 here")
-    print(datetime.now(), "import user before read excel")
+    print("/candidates/import-users-data. import user before read excel at", datetime.now())
     data = pd.read_excel(file_name, index_col=None)
     volunteer_data = data.astype(object).replace(np.nan, None)
-    print('finished replacing none to null values in import', datetime.now())
+    print('/candidates/import-users-data. finished replacing none to null values in import at', datetime.now())
 
     for name in volunteer_data.iterrows():  
         new_user_from_excel = name[1].to_dict()
         all_users_in_excel.append(new_user_from_excel)
     
-    print(datetime.now(), "before for candidate ids")
+    print("/candidates/import-users-data. before for candidate ids", datetime.now())
     all_ids_excel = []
     duplicate_ids_excel = []
     for i in all_users_in_excel:
@@ -811,12 +810,12 @@ def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = 
             if id_value not in duplicate_ids_excel:
                 duplicate_ids_excel.append(id_value)
 
-    print(datetime.now(), 'before all_candidate_ids_in_db')
+    print('/candidates/import-users-data. before setting all_candidate_ids_in_db started at', datetime.now())
 
     all_candidate_ids_in_db = db.scalars(db.query(models.Volunteers.candidate_id)).all()
-    print(len(all_candidate_ids_in_db), 'all existing candidates in db')
+    print('/candidates/import-users-data. existing candidates count in db', len(all_candidate_ids_in_db))
 
-    print(datetime.now(), 'after all_candidate_ids_in_db')
+    print('/candidates/import-users-data. after all_candidate_ids_in_db is set at', datetime.now())
     saved_users = []
     updated_users = []    
     if duplicate_ids_excel == []: 
@@ -1015,19 +1014,15 @@ def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = 
                 }
                 updated_users.append(update_user)
         if saved_users != []:
-            print(len(saved_users), "length of saved users before bulk saving")
-            print(datetime.now(), "saving users in import")
+            print("/candidates/import-users-data. length of saved users before bulk saving", len(saved_users), " Bulk saving started at ", datetime.now())
             db.bulk_insert_mappings(models.Volunteers, saved_users)
-            print(datetime.now(), 'before committing saved users in import')
+            print('/candidates/import-users-data. Bulk saving ended at ', datetime.now())
             db.commit()
         if updated_users != []:
-            print("updated users")
-            print(datetime.now())
-            print(len(updated_users), "length of updated users before bulk updating")
+            print( "/candidates/import-data. length of updated users before bulk updating", len(updated_users), "Bulk updating statrted at ", datetime.now())
             db.bulk_update_mappings(models.Volunteers, updated_users)
-            print(datetime.now(), "before committing updated users in import")
+            print("/candidates/import-users-data. Bulk update ended at ", datetime.now())
             db.commit()
-            print(datetime.now(), "saved updated users in import")
     else:
         return { "statusCode": status.HTTP_400_BAD_REQUEST, "value": "DuplicateID", "message": duplicate_ids_excel}
 
@@ -1043,7 +1038,7 @@ def record_history(email: str, db: Session = Depends(get_db)):
     existing_candidate_ids = [] #bcz user_id is not unique in history table there can be several objects with same ids, append and check to be unique
 
     
-    print('record-history before for loop')
+    print('/candidates/record-history. before for loop')
     for user in users_db:
         if user.candidate_id in history_db_ids:
             for history in history_db:
@@ -1070,16 +1065,15 @@ def record_history(email: str, db: Session = Depends(get_db)):
             }
             new_users.append(new_user)
     if new_users != []:
-        print('new users in saving record-history', len(new_users))
+        print('/candidates/record-history. new_users len = ', len(new_users))
         db.bulk_insert_mappings(models.Histories, new_users)
         db.commit() 
-        print("committed in record history ")
     if updated_users != []:
-        print('updating users in saving record-history', len(updated_users))
+        print('/candidates/record-history. updated_users len =', len(updated_users))
         db.bulk_insert_mappings(models.Histories, updated_users)
         db.commit()
 
-    print('finished recording history')
+    print('/candidates/record-history. finished at ', datetime.now())
 
 
 
@@ -1097,10 +1091,9 @@ def export_volunteers(db: Session = Depends(get_db)):
     text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
 
     for user in users:
-        if user.status is not None:
-            ids.append(user.candidate_id)
-            statuses.append(user.status)
-            role_offers.append(user.role_offer_id)
+        ids.append(user.candidate_id)
+        statuses.append(user.status)
+        role_offers.append(user.role_offer_id)
 
     data = pd.DataFrame({col1:ids,col2:statuses,col3:role_offers})
 
@@ -1110,7 +1103,7 @@ def export_volunteers(db: Session = Depends(get_db)):
     
     if file_exists:
         file_path = 'files/export_data.xlsx'
-        print('file exists, returning export file in export-volunteers')
+        print('/candidates/export-volunteers. file exists, returning export file in export-volunteers')
         return FileResponse(file_path, filename="export_data.xlsx", media_type="xlsx")
     return { "statusCode": status.HTTP_404_NOT_FOUND, "value": "notexist"}
     
@@ -1119,9 +1112,7 @@ def export_volunteers(db: Session = Depends(get_db)):
 @prefix_router.get('/check-role')
 def check_role(db: Session = Depends(get_db)):
 
-    print('inside check role func')
-
-
+    print('/candidates/check-role. Started at ', datetime.now())
     updated_users = []
     all_users = db.query(models.Volunteers).all()
     for user in all_users:
@@ -1135,26 +1126,25 @@ def check_role(db: Session = Depends(get_db)):
 
 
     if updated_users != []:
-        print('checking role offer to match with statuses, updating length is', len(updated_users))
+        print('/candidates/check-role. updated_users len = ', len(updated_users))
         db.bulk_update_mappings(models.Volunteers, updated_users)
         db.commit()
-        print('committed updated users in check-role')
 
-    print('checked all roles, users who have changes', len(updated_users))
+    print('/candidates/check-role. Users who have changes ', len(updated_users), " Endpoint ended at ", datetime.now())
 
 
 
 @prefix_router.get('/user-history/{candidate_id}')
 def read_user_history(candidate_id: int, db: Session = Depends(get_db)):
     histories = db.query(models.Histories).filter(models.Histories.user_id == candidate_id).all()
-    print(len(histories), "user-histories")
+    print('/candidates/user-history. histories len = ', len(histories))
     return histories
 
 
 
 @prefix_router.post('/report')
 def reporting(report_list: dict, db: Session = Depends(get_db)):
-    print(report_list, 'report list from front')
+    print('/candidates/report. report_list = ', report_list)
     template_name = report_list["template_name"]
     ro_columns = report_list["role_columns"]
     vol_columns = report_list["vol_columns"]
@@ -1303,7 +1293,7 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
 
     join_statement = " From role_offers ro INNER JOIN  functional_area_types Entity on ro.functional_area_type_id = Entity.id INNER JOIN functional_areas Functional_Area on ro.functional_area_id = Functional_Area.id INNER JOIN job_titles Job_Title on ro.job_title_id = Job_Title.id INNER JOIN locations Location on ro.location_id = Location.id INNER JOIN volunteers on volunteers.role_offer_id = ro.role_offer_id "
     final_statement = f"{select_statement}{join_statement}{fin_req}"
-    print(final_statement, 'final statement in reporting users')
+    print('/candidates/report. final_statement = ', final_statement)
         
     rows = engine.execute(text(final_statement))
     reported_users = []
@@ -1317,7 +1307,7 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
     
     if file_exists:
         file_path = f'files/{template_name}.xlsx'
-        print('file exists, returning export file in export-volunteers')
+        print('/candidates/report. file exists, returning export file in export-volunteers')
         return FileResponse(file_path, filename=f"{template_name}.xlsx", media_type="xlsx")
     return { "statusCode": status.HTTP_404_NOT_FOUND, "value": "notexist"}
    

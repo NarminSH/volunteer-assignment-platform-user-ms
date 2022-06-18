@@ -685,7 +685,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
         
         operators_dict = {
             "equal":"=",
-            "not equal": "!=",
+            "not equal": "IS DISTINCT FROM",
             "contains": "ILIKE",
             ">": ">",
             "<": "<",
@@ -722,6 +722,8 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
             single_where_statement += "("
             for index, val in enumerate(filter["value"]):
                 operator = operators_dict[filter["operator"]]
+                if operator == "ILIKE":
+                    val = f"%{val}%"
                 if "'" in val:
                     val = val.replace("'", "''")
                 
@@ -1167,7 +1169,7 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
 
     operators_dict = {
             "equal":"=",
-            "not equal": "!=",
+            "not equal": "IS DISTINCT FROM",
             "contains": "ILIKE",
             ">": ">",
             "<": "<",
@@ -1226,8 +1228,10 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
             single_where_statement += "("
             for index, val in enumerate(vol_filter["value"]):
                 operator = operators_dict[vol_filter["operator"]]
-                if "don't" in val:
-                    val = val.replace("don't", "don''t")
+                if operator == "ILIKE":
+                    val = f"%{val}%"
+                if "'" in val:
+                    val = val.replace("'", "''")
                 
                 if requirement == "skill":
                     unique_skills = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]

@@ -1083,9 +1083,9 @@ def export_volunteers(db: Session = Depends(get_db)):
     ids = []
     statuses = []
     role_offers = []
-    col1 = "id"
-    col2 = "status"
-    col3 = "role_offer_id"
+    col1 = "user_id"
+    col2 = "role_offer_id"
+    col3 = "status"
 
     users = db.query(models.Volunteers).from_statement(
     text("""SELECT candidate_id, status, role_offer_id from volunteers;""")).all()
@@ -1095,7 +1095,7 @@ def export_volunteers(db: Session = Depends(get_db)):
         statuses.append(user.status)
         role_offers.append(user.role_offer_id)
 
-    data = pd.DataFrame({col1:ids,col2:statuses,col3:role_offers})
+    data = pd.DataFrame({col1:ids,col2:role_offers,col3:statuses})
 
     data.to_excel('files/export_data.xlsx', sheet_name='sheet1', index=False)
 

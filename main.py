@@ -835,15 +835,18 @@ def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = 
             if id_value not in duplicate_ids_excel:
                 duplicate_ids_excel.append(id_value)
 
-    print('/candidates/import-users-data. before setting all_candidate_ids_in_db started at', datetime.now())
+    print('/candidates/import-users-data. existing candidate_id length in excel', len(all_ids_excel))
+
+    print('/candidates/import-users-data. before getting all_candidate_ids_in_db started at', datetime.now())
 
     all_candidate_ids_in_db = db.scalars(db.query(models.Volunteers.candidate_id)).all()
     print('/candidates/import-users-data. existing candidates count in db', len(all_candidate_ids_in_db))
 
-    # for candidate_id in all_candidate_ids_in_db:
-    #     if candidate_id not in all_ids_excel:
-            
-
+    for candidate_id in all_candidate_ids_in_db:
+        if candidate_id not in all_ids_excel:
+            candidate = db.query(models.Volunteers).get(candidate_id)
+            db.delete(candidate)
+            db.commit()
 
     print('/candidates/import-users-data. after all_candidate_ids_in_db is set at', datetime.now())
     saved_users = []

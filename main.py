@@ -792,7 +792,7 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
 
 
     users = db.query(models.Volunteers).from_statement(
-    text(f"""SELECT * from volunteers {fin_req};""")).all()
+    text(f"""SELECT * from volunteers {fin_req} ORDER BY candidate_id;""")).all()
     print('/candidates/filter-volunteers. users count = ', len(users))
 
     response = {
@@ -839,6 +839,11 @@ def import_data(email:str, background_task: BackgroundTasks, file: UploadFile = 
 
     all_candidate_ids_in_db = db.scalars(db.query(models.Volunteers.candidate_id)).all()
     print('/candidates/import-users-data. existing candidates count in db', len(all_candidate_ids_in_db))
+
+    # for candidate_id in all_candidate_ids_in_db:
+    #     if candidate_id not in all_ids_excel:
+            
+
 
     print('/candidates/import-users-data. after all_candidate_ids_in_db is set at', datetime.now())
     saved_users = []

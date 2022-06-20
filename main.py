@@ -724,8 +724,9 @@ def filter_volunteers(filter_list: List, page_number: int = 1, page_size:int = 1
                 operator = operators_dict[filter["operator"]]
                 if operator == "ILIKE":
                     val = f"%{val}%"
-                if "'" in val:
-                    val = val.replace("'", "''")
+                if type(val) == str:
+                    if "'" in val:
+                        val = val.replace("'", "''")
                 
                 if requirement == "skill":
                     unique_skills = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]
@@ -1252,8 +1253,9 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
                 operator = operators_dict[vol_filter["operator"]]
                 if operator == "ILIKE":
                     val = f"%{val}%"
-                if "'" in val:
-                    val = val.replace("'", "''")
+                if type(val) == str:
+                    if "'" in val:
+                        val = val.replace("'", "''")
                 
                 if requirement == "skill":
                     unique_skills = ["skill_1", "skill_2", "skill_3", "skill_4", "skill_5", "skill_6"]
@@ -1334,8 +1336,9 @@ def reporting(report_list: dict, db: Session = Depends(get_db)):
                 operator = operators_dict[role_filter["operator"]]
                 if operator == "ILIKE":
                     val = f"%{val}%"
-                if "'" in val:
-                    val = val.replace("'", "''")
+                if type(val) == str:
+                    if "'" in val:
+                        val = val.replace("'", "''")
                                 
                 single_where_statement += f"{requirement}.name {operator} '{val}'"
                 if index != len(role_filter["value"])-1:
